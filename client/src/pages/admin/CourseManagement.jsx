@@ -212,12 +212,12 @@ function AddCourse2() {
   
   return (
     <AdminLayout>
-      <div className="p-6 max-w-5xl mx-auto bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen rounded-xl shadow-inner text-gray-900">
+      <div className="p-6 max-w-5xl mx-auto bg-[#111827] min-h-screen rounded-xl shadow-inner text-white">
         <h1 className="text-3xl font-bold mb-6">📘 Course Dashboard</h1>
 
         {/* Admin Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-gradient-to-br from-purple-500 to-green-600 text-white p-5 shadow rounded-xl">
+          <div className="bg-gray-800 text-white p-5 shadow rounded-xl">
             <h2 className="text-xl font-semibold">
               {getGreeting()}, {user?.name} 👋
             </h2>
@@ -225,14 +225,14 @@ function AddCourse2() {
             <p className="mt-2">📧 {user?.email}</p>
             <p>🛡️ {user?.role?.toUpperCase()}</p>
           </div>
-          <div className="bg-green-500 text-white p-4 rounded-xl">
+          <div className="bg-gray-800 text-white p-4 rounded-xl">
             <h2 className="text-xl font-semibold">📚 Total Courses</h2>
             <p className="text-3xl font-bold">{courses.length}</p>
           </div>
         </div>
 
         {/* Add/Edit Course */}
-        <div className="bg-white p-4 rounded shadow mb-8">
+        <div className="bg-gray-800 p-4 rounded shadow mb-8">
           <h2 className="text-xl font-semibold mb-2">
             {isEditing ? "Edit Course" : "Add Course"}
           </h2>
@@ -241,35 +241,35 @@ function AddCourse2() {
             placeholder="Course Name"
             value={formData.name}
             onChange={handleChange}
-            className="border p-2 mb-2 w-full"
+            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
           />
           <input
             name="description"
             placeholder="Description"
             value={formData.description}
             onChange={handleChange}
-            className="border p-2 mb-2 w-full"
+            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
           />
           <input
             name="image_link"
             placeholder="Image URL"
             value={formData.image_link}
             onChange={handleChange}
-            className="border p-2 mb-2 w-full"
+            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
           />
           <input
             name="short_description"
             placeholder="Short Description"
             value={formData.short_description}
             onChange={handleChange}
-            className="border p-2 mb-2 w-full"
+            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
           />
           <input
             name="short_name"
             placeholder="Short Name"
             value={formData.short_name}
             onChange={handleChange}
-            className="border p-2 mb-2 w-full"
+            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
           />
           {isEditing ? (
             <button
@@ -281,7 +281,7 @@ function AddCourse2() {
           ) : (
             <button
               onClick={handleAdd}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
+              className="bg-rose-600 text-white px-4 py-2 rounded"
             >
               Add
             </button>
@@ -291,25 +291,25 @@ function AddCourse2() {
         {/* Course List */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {courses.map((course, idx) => (
-            <div key={course._id} className="bg-white p-4 rounded shadow">
+            <div key={course._id} className="bg-gray-800 p-4 rounded shadow">
               <h3 className="text-xl font-bold">{course.name}</h3>
               <p>{course.description}</p>
               <div className="flex gap-4 text-sm mt-2">
                 <button
                   onClick={() => handleEdit(course)}
-                  className="text-yellow-600"
+                  className="text-yellow-400"
                 >
                   ✏️ Edit
                 </button>
                 <button
                   onClick={() => handleDelete(course._id)}
-                  className="text-red-600"
+                  className="text-red-500"
                 >
                   🗑 Delete
                 </button>
                 <button
                   onClick={() => setSelectedCourseIndex(idx)}
-                  className="text-blue-600"
+                  className="text-blue-400"
                 >
                   📂 View Headings
                 </button>
@@ -320,7 +320,7 @@ function AddCourse2() {
 
         {/* Heading + Topics */}
         {selectedCourseIndex !== null && courses[selectedCourseIndex] && (
-          <div className="mt-10 bg-white p-4 rounded shadow">
+          <div className="mt-10 bg-gray-800 p-4 rounded shadow">
             <h2 className="text-xl font-bold mb-4">
               🗂 Headings for "{courses[selectedCourseIndex].name}"
             </h2>
@@ -328,11 +328,11 @@ function AddCourse2() {
               value={newHeading}
               onChange={(e) => setNewHeading(e.target.value)}
               placeholder="New Heading Name"
-              className="border p-2 mb-2 w-full"
+              className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
             />
             <button
               onClick={addHeading}
-              className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
+              className="bg-rose-600 text-white px-4 py-2 rounded mb-4"
             >
               ➕ Add Heading
             </button>
@@ -345,18 +345,18 @@ function AddCourse2() {
                       <input
                         value={editedHeadingName}
                         onChange={(e) => setEditedHeadingName(e.target.value)}
-                        className="border p-1 flex-1 mr-2"
+                        className="border bg-gray-700 border-gray-600 p-1 flex-1 mr-2"
                       />
                       <div className=" space-x-3">
                         <button
                           onClick={saveEditedHeading}
-                          className="text-green-600 text-sm"
+                          className="text-green-500 text-sm"
                         >
                           ✅
                         </button>
                         <button
                           onClick={cancelEditHeading}
-                          className="text-red-600 text-sm ml-1"
+                          className="text-red-500 text-sm ml-1"
                         >
                           ❌
                         </button>
@@ -368,13 +368,13 @@ function AddCourse2() {
                       <div>
                         <button
                           onClick={() => editHeading(hIdx)}
-                          className="text-yellow-500 text-sm mr-2"
+                          className="text-yellow-400 text-sm mr-2"
                         >
                           ✏️ Edit
                         </button>
                         <button
                           onClick={() => deleteHeading(hIdx)}
-                          className="text-red-600 text-sm"
+                          className="text-red-500 text-sm"
                         >
                           ❌ Delete
                         </button>
@@ -383,14 +383,14 @@ function AddCourse2() {
                   )}
                 </div>
 
-                <table className="w-full border text-sm mb-2">
-                  <thead className="bg-gray-200">
+                <table className="w-full border border-gray-700 text-sm mb-2">
+                  <thead className="bg-gray-700">
                     <tr>
-                      <th className="border px-2 py-1 text-left">Title</th>
-                      <th className="border px-2 py-1 text-left">
+                      <th className="border border-gray-600 px-2 py-1 text-left">Title</th>
+                      <th className="border border-gray-600 px-2 py-1 text-left">
                         YouTube Link
                       </th>
-                      <th className="border px-2 py-1">Actions</th>
+                      <th className="border border-gray-600 px-2 py-1">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -399,7 +399,7 @@ function AddCourse2() {
                         {editingTopic.headingIndex === hIdx &&
                         editingTopic.topicIndex === tIdx ? (
                           <>
-                            <td className="border px-2 py-1">
+                            <td className="border border-gray-600 px-2 py-1">
                               <input
                                 value={editingTopic.title}
                                 onChange={(e) =>
@@ -408,10 +408,10 @@ function AddCourse2() {
                                     title: e.target.value,
                                   })
                                 }
-                                className="border p-1 w-full"
+                                className="border bg-gray-700 border-gray-600 p-1 w-full"
                               />
                             </td>
-                            <td className="border px-2 py-1">
+                            <td className="border border-gray-600 px-2 py-1">
                               <input
                                 value={editingTopic.youtubeLink}
                                 onChange={(e) =>
@@ -420,19 +420,19 @@ function AddCourse2() {
                                     youtubeLink: e.target.value,
                                   })
                                 }
-                                className="border p-1 w-full"
+                                className="border bg-gray-700 border-gray-600 p-1 w-full"
                               />
                             </td>
-                            <td className="border px-2 py-1 text-center space-x-4">
+                            <td className="border border-gray-600 px-2 py-1 text-center space-x-4">
                               <button
                                 onClick={saveEditTopic}
-                                className="text-green-600 text-sm mr-1"
+                                className="text-green-500 text-sm mr-1"
                               >
                                 Save
                               </button>
                               <button
                                 onClick={cancelEditTopic}
-                                className="text-red-600 text-sm"
+                                className="text-red-500 text-sm"
                               >
                                 Cancel
                               </button>
@@ -440,8 +440,8 @@ function AddCourse2() {
                           </>
                         ) : (
                           <>
-                            <td className="border px-2 py-1">{topic.title}</td>
-                            <td className="border px-2 py-1 text-blue-600">
+                            <td className="border border-gray-600 px-2 py-1">{topic.title}</td>
+                            <td className="border border-gray-600 px-2 py-1 text-blue-400">
                               <a
                                 href={topic.youtubeLink}
                                 target="_blank"
@@ -450,16 +450,16 @@ function AddCourse2() {
                                 {topic.youtubeLink}
                               </a>
                             </td>
-                            <td className="border px-2 py-1 text-center space-x-4">
+                            <td className="border border-gray-600 px-2 py-1 text-center space-x-4">
                               <button
                                 onClick={() => startEditTopic(hIdx, tIdx)}
-                                className="text-yellow-500 text-sm mr-1"
+                                className="text-yellow-400 text-sm mr-1"
                               >
                                 Edit
                               </button>
                               <button
                                 onClick={() => deleteTopic(hIdx, tIdx)}
-                                className="text-red-600 text-sm"
+                                className="text-red-500 text-sm"
                               >
                                 Delete
                               </button>
@@ -478,7 +478,7 @@ function AddCourse2() {
                     onChange={(e) =>
                       setNewTopic({ ...newTopic, title: e.target.value })
                     }
-                    className="border p-1 flex-1"
+                    className="border bg-gray-700 border-gray-600 p-1 flex-1"
                   />
                   <input
                     placeholder="YouTube Link"
@@ -486,11 +486,11 @@ function AddCourse2() {
                     onChange={(e) =>
                       setNewTopic({ ...newTopic, youtubeLink: e.target.value })
                     }
-                    className="border p-1 flex-1"
+                    className="border bg-gray-700 border-gray-600 p-1 flex-1"
                   />
                   <button
                     onClick={() => addTopic(hIdx)}
-                    className="bg-green-500 text-white px-3 py-1 rounded text-sm"
+                    className="bg-rose-600 text-white px-3 py-1 rounded text-sm"
                   >
                     Add Topic
                   </button>
