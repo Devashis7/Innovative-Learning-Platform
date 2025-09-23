@@ -1,11 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Chat from "../../components/our components/Chat";
 
 const AdminLayout = ({ children }) => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-gray-900 text-white">
       {/* Sidebar */}
-      <aside className="w-64 bg-gray-800 text-white p-4 space-y-4">
+      <aside className="w-64 bg-gray-800 p-4 space-y-4">
         <h2 className="text-2xl font-bold mb-4">Admin Dashboard</h2>
         <Link
           to="/admin-dashboard"
@@ -23,13 +24,16 @@ const AdminLayout = ({ children }) => {
           to="/"
           className="block w-full text-left hover:bg-gray-700 p-2 rounded"
         >
-        Home
+          Home
         </Link>
       </aside>
 
-
-      <main className="flex-1 p-6 bg-gray-900 overflow-auto">
-        {children}
+      {/* Main Content & Chat */}
+      <main className="flex-1 flex p-6 overflow-auto">
+        <div className="flex-1 ">{children}</div>
+        <div className="w-1/3 ml-6">
+          <Chat />
+        </div>
       </main>
     </div>
   );

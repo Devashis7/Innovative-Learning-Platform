@@ -1,5 +1,6 @@
+
 import NavBar from "@/components/our components/NavBar";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import logo from "/logo.png";
 import Button from "@/components/our components/Button";
 import Card from "@/components/our components/Card";
@@ -7,9 +8,24 @@ import Card2 from "@/components/our components/card2";
 import FeatureCard from "@/components/our components/FeatureCard ";
 import features from "@/utils/features";
 import { motion } from "framer-motion"; // Import Framer Motion
+import axios from "axios";
 
-const Home = ({ coursesData }) => {
-  const courses = coursesData;
+const Home = () => {
+  const [courses, setCourses] = useState([]);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/courses");
+        setCourses(response.data.data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+
+    fetchCourses();
+  }, []);
+
   return (
     <motion.div
       className="bg-[#111827]"
