@@ -65,17 +65,19 @@ const Courses = () => {
               {filteredCourses.map((course) => (
                 <Link to={`/course/${course._id}`} key={course._id} className="block transform hover:-translate-y-1 transition-transform duration-300">
                   <div className="h-full bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                    <div className="h-40 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                      <FaBookOpen className="text-5xl text-gray-400 dark:text-gray-500" />
-                    </div>
                     <div className="p-6">
-                      <h3 className="text-xl font-bold mb-2 h-16">{course.name}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm h-20 overflow-hidden">{course.description}</p>
-                    </div>
-                    <div className="p-6 pt-0">
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="w-3 h-3 bg-gradient-to-r from-rose-500 to-orange-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-rose-500">COURSE</span>
+                      </div>
+                      <h3 className="text-xl font-bold mb-3">{course.name}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-6 line-clamp-4">{course.description}</p>
+                      <div className="flex items-center justify-between">
                         <span className="inline-block bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 px-3 py-1 text-sm font-semibold rounded-full">
                             View Details
                         </span>
+                        <FaBookOpen className="text-rose-500" />
+                      </div>
                     </div>
                   </div>
                 </Link>

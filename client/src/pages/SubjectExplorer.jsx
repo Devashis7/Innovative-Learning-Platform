@@ -31,9 +31,9 @@ const SubjectExplorer = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [userProgress, setUserProgress] = useState({});
+  const [categories, setCategories] = useState(["All"]);
 
   const semesters = ["All", 1, 2, 3, 4, 5, 6, 7, 8];
-  const categories = ["All", "Core", "Elective", "Lab", "Project"];
 
   useEffect(() => {
     fetchSubjects();
@@ -47,7 +47,17 @@ const SubjectExplorer = () => {
   const fetchSubjects = async () => {
     try {
       const response = await axios.get("http://localhost:3000/api/courses");
-      setSubjects(response.data.data || []);
+      const subjectsData = response.data.data || [];
+      setSubjects(subjectsData);
+      
+      // Extract unique categories from the data
+      const uniqueCategories = ["All", ...new Set(subjectsData.map(subject => subject.category).filter(Boolean))];
+      setCategories(uniqueCategories);
+      
+      console.log("📚 Fetched subjects:", subjectsData.length);
+      console.log("📂 Available categories:", uniqueCategories);
+      console.log("🔢 Available semesters:", [...new Set(subjectsData.map(s => s.semester))]);
+      
       setLoading(false);
     } catch (error) {
       console.error("Error fetching subjects:", error);
@@ -76,22 +86,38 @@ const SubjectExplorer = () => {
   const filterSubjects = () => {
     let filtered = subjects;
 
+    console.log("🔍 Filtering subjects:", { selectedSemester, selectedCategory, searchTerm });
+    console.log("📚 Total subjects:", subjects.length);
+
     if (selectedSemester !== "All") {
-      filtered = filtered.filter(subject => subject.semester === selectedSemester);
+      console.log("🔢 Filtering by semester:", selectedSemester, typeof selectedSemester);
+      console.log("Sample subject semesters:", subjects.slice(0, 3).map(s => ({ name: s.name, semester: s.semester, type: typeof s.semester })));
+      
+      // Convert selectedSemester to number for comparison since DB stores as number
+      const semesterNumber = parseInt(selectedSemester);
+      filtered = filtered.filter(subject => subject.semester === semesterNumber);
+      console.log("📊 After semester filter:", filtered.length);
     }
 
     if (selectedCategory !== "All") {
+      console.log("📂 Filtering by category:", selectedCategory);
+      console.log("Sample subject categories:", subjects.slice(0, 3).map(s => ({ name: s.name, category: s.category })));
+      
       filtered = filtered.filter(subject => subject.category === selectedCategory);
+      console.log("📊 After category filter:", filtered.length);
     }
 
     if (searchTerm) {
+      console.log("🔍 Filtering by search term:", searchTerm);
       filtered = filtered.filter(subject =>
         subject.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         subject.short_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         subject.description.toLowerCase().includes(searchTerm.toLowerCase())
       );
+      console.log("📊 After search filter:", filtered.length);
     }
 
+    console.log("✅ Final filtered subjects:", filtered.length);
     setFilteredSubjects(filtered);
   };
 

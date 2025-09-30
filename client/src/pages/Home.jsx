@@ -119,13 +119,7 @@ const Home = () => {
                   Start Learning Today <FaArrowRight />
                 </motion.button>
               </Link>
-              <motion.button 
-                className="border-2 border-gray-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-600/20 transition-all duration-300 flex items-center gap-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FaPlayCircle /> Watch Demo
-              </motion.button>
+              
             </div>
 
             {/* Trust Indicators */}

@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       if (res.data.user.role === "admin") {
         navigate("/admin/dashboard");
       } else {
-        navigate("/student/dashboard");
+        navigate("/dashboard");
       }
     } catch (error) {
       console.error("Login Error:", error.response.data);

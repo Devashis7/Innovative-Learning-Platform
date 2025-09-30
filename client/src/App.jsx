@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { CourseProvider } from './context/CourseContext';
 
@@ -17,6 +17,8 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import CourseManagement from './pages/admin/CourseManagement';
 import UserManagement from './pages/admin/UserManagement';
 import CourseDetails from './pages/courses/CourseDetails';
+import SubjectExplorer from './pages/SubjectExplorer';
+import SubjectLearning from './pages/SubjectLearning';
 
 const App = () => {
   return (
@@ -35,10 +37,28 @@ const App = () => {
 
           {/* Student Routes */}
           <Route
-            path='/student/dashboard'
+            path='/dashboard'
             element={
               <PrivateRoute>
                 <StudentDashboard />
+              </PrivateRoute>
+            }
+          />
+          {/* Redirect old student dashboard route */}
+          <Route path='/student/dashboard' element={<Navigate to="/dashboard" replace />} />
+          <Route
+            path='/subjects'
+            element={
+              <PrivateRoute>
+                <SubjectExplorer />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path='/subject/:id'
+            element={
+              <PrivateRoute>
+                <SubjectLearning />
               </PrivateRoute>
             }
           />
@@ -60,6 +80,8 @@ const App = () => {
               </AdminRoute>
             }
           />
+          {/* Redirect admin-dashboard to admin/dashboard */}
+          <Route path='/admin-dashboard' element={<Navigate to="/admin/dashboard" replace />} />
           <Route
             path='/admin/courses'
             element={

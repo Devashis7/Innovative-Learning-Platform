@@ -24,7 +24,7 @@ import { useTheme } from "@/context/ThemeContext";
 import axios from "axios";
 
 const SubjectLearning = () => {
-  const { subjectId } = useParams();
+  const { id: subjectId } = useParams();
   const { isDarkMode, colors } = useTheme();
   const currentTheme = isDarkMode ? colors.dark : colors.light;
   
@@ -36,11 +36,29 @@ const SubjectLearning = () => {
   const [activeSubtopic, setActiveSubtopic] = useState(null);
   const [userNotes, setUserNotes] = useState({});
   const [showNotesModal, setShowNotesModal] = useState(false);
+  const [localCompletionState, setLocalCompletionState] = useState({});
 
   useEffect(() => {
     fetchSubjectDetails();
     fetchUserProgress();
+    enrollInSubjectIfNeeded();
   }, [subjectId]);
+
+  const enrollInSubjectIfNeeded = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        // This will auto-enroll the user if they're not already enrolled
+        await axios.post(`http://localhost:3000/api/progress/enroll`, 
+          { courseId: subjectId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log("✅ User enrolled in subject (or already enrolled)");
+      }
+    } catch (error) {
+      console.log("📝 Enrollment check completed (might already be enrolled)");
+    }
+  };
 
   const fetchSubjectDetails = async () => {
     try {
@@ -59,11 +77,17 @@ const SubjectLearning = () => {
 
   const fetchUserProgress = async () => {
     try {
+      console.log("🔄 Fetching progress for subject:", subjectId);
+      console.log("🔗 Full URL:", `http://localhost:3000/api/progress/course/${subjectId}`);
       const token = localStorage.getItem("token");
       if (token) {
         const response = await axios.get(`http://localhost:3000/api/progress/course/${subjectId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+        console.log("📊 Progress response:", response.data);
+        console.log("📊 Progress data structure:", JSON.stringify(response.data.data, null, 2));
+        console.log("🌐 Response status:", response.status);
+        console.log("🔗 Request URL:", response.config.url);
         setProgress(response.data.data);
         
         // Extract notes from progress
@@ -81,27 +105,20 @@ const SubjectLearning = () => {
       }
     } catch (error) {
       console.error("Error fetching progress:", error);
-      // Initialize progress if not found
-      if (error.response?.status === 404) {
-        initializeProgress();
-      }
+      // Set empty progress structure if not found
+      setProgress({
+        courseId: subjectId,
+        unitsProgress: [],
+        overallProgress: 0,
+        totalSubtopics: 0,
+        completedSubtopics: 0,
+        totalTimeSpent: 0,
+        streak: 0
+      });
     }
   };
 
-  const initializeProgress = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        await axios.post("http://localhost:3000/api/progress/initialize", 
-          { courseId: subjectId },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        fetchUserProgress();
-      }
-    } catch (error) {
-      console.error("Error initializing progress:", error);
-    }
-  };
+
 
   const toggleUnit = (unitId) => {
     const newExpanded = new Set(expandedUnits);
@@ -124,81 +141,83 @@ const SubjectLearning = () => {
   };
 
   const toggleSubtopicCompletion = async (unitId, topicId, subtopicId) => {
+    console.log("🔄 Toggling subtopic completion:", { unitId, topicId, subtopicId });
+    
     try {
       const token = localStorage.getItem("token");
+      console.log("🔑 Token exists:", !!token);
+      
       if (token) {
         const subtopicProgress = getSubtopicProgress(unitId, topicId, subtopicId);
         const isCompleted = !subtopicProgress?.isCompleted;
         
-        await axios.put(
-          `http://localhost:3000/api/progress/course/${subjectId}/unit/${unitId}/topic/${topicId}/subtopic/${subtopicId}`,
-          { 
-            isCompleted,
-            timeSpent: isCompleted ? 30 : 0 // Estimate 30 minutes per completion
-          },
+        // Remove local state dependency - rely on database only
+        
+        console.log("📊 Current progress:", subtopicProgress);
+        console.log("✅ New completion state:", isCompleted);
+        console.log(isCompleted ? "☑️ Checking subtopic" : "☐ Unchecking subtopic");
+        
+        const requestData = { 
+          courseId: subjectId,
+          subtopicId: subtopicId,
+          completed: isCompleted
+        };
+        console.log("📤 Sending request:", requestData);
+        
+        const response = await axios.post(
+          `http://localhost:3000/api/progress/mark`,
+          requestData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         
-        // Refresh progress
-        fetchUserProgress();
+        console.log("📥 Response:", response.data);
+        
+        // Update progress state immediately with returned data
+        if (response.data.success && response.data.data.unitsProgress) {
+          console.log("� Updating progress from response...");
+          setProgress({
+            courseId: response.data.data.courseId,
+            unitsProgress: response.data.data.unitsProgress,
+            overallProgress: response.data.data.overallProgress,
+            totalSubtopics: response.data.data.totalSubtopics || 0,
+            completedSubtopics: response.data.data.completedSubtopics || 0,
+            totalTimeSpent: response.data.data.totalTimeSpent || 0
+          });
+          console.log("✅ Progress updated immediately from response!");
+        } else {
+          // Fallback: refresh progress from server
+          console.log("� Refreshing progress from server...");
+          await fetchUserProgress();
+        }
+      } else {
+        console.error("❌ No authentication token found");
       }
     } catch (error) {
-      console.error("Error updating progress:", error);
+      console.error("❌ Error updating progress:", error);
+      if (error.response) {
+        console.error("❌ Response data:", error.response.data);
+        console.error("❌ Response status:", error.response.status);
+      }
     }
   };
 
   const toggleBookmark = async (unitId, topicId, subtopicId) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        await axios.post(
-          `http://localhost:3000/api/progress/course/${subjectId}/unit/${unitId}/topic/${topicId}/subtopic/${subtopicId}/bookmark`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        
-        // Refresh progress
-        fetchUserProgress();
-      }
-    } catch (error) {
-      console.error("Error toggling bookmark:", error);
-    }
+    // Bookmark functionality not implemented yet
+    console.log("Bookmark functionality coming soon!");
   };
 
   const saveNotes = async (subtopicId, notes) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        // Find the path for this subtopic
-        let unitId, topicId;
-        subject.units.forEach(unit => {
-          unit.topics.forEach(topic => {
-            topic.subtopics.forEach(subtopic => {
-              if (subtopic._id === subtopicId) {
-                unitId = unit._id;
-                topicId = topic._id;
-              }
-            });
-          });
-        });
-
-        await axios.put(
-          `http://localhost:3000/api/progress/course/${subjectId}/unit/${unitId}/topic/${topicId}/subtopic/${subtopicId}`,
-          { notes },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        
-        setUserNotes(prev => ({ ...prev, [subtopicId]: notes }));
-      }
-    } catch (error) {
-      console.error("Error saving notes:", error);
-    }
+    // Notes functionality not implemented yet
+    console.log("Notes functionality coming soon!");
+    setUserNotes(prev => ({ ...prev, [subtopicId]: notes }));
   };
 
   const getSubtopicProgress = (unitId, topicId, subtopicId) => {
     const unit = progress?.unitsProgress?.find(u => u.unitId === unitId);
     const topic = unit?.topicsProgress?.find(t => t.topicId === topicId);
-    return topic?.subtopicsProgress?.find(st => st.subtopicId === subtopicId);
+    const subtopic = topic?.subtopicsProgress?.find(st => st.subtopicId === subtopicId);
+    
+    return subtopic || { isCompleted: false, bookmarked: false, notes: "", timeSpent: 0 };
   };
 
   const getUnitProgress = (unitId) => {
@@ -421,6 +440,8 @@ const SubjectLearning = () => {
                                         const isCompleted = subtopicProgress?.isCompleted || false;
                                         const isBookmarked = subtopicProgress?.bookmarked || false;
                                         
+
+                                        
                                         return (
                                           <div 
                                             key={subtopic._id}
@@ -430,13 +451,14 @@ const SubjectLearning = () => {
                                             {/* Completion Checkbox */}
                                             <button
                                               onClick={() => toggleSubtopicCompletion(unit._id, topic._id, subtopic._id)}
-                                              className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all duration-200 ${
+                                              className={`w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all duration-200 hover:scale-105 ${
                                                 isCompleted 
-                                                  ? 'bg-green-500 border-green-500 text-white' 
-                                                  : 'border-gray-300 hover:border-green-500'
+                                                  ? 'bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/30' 
+                                                  : (isDarkMode ? 'border-gray-600 hover:border-green-400 bg-gray-700' : 'border-gray-300 hover:border-green-500 bg-white')
                                               }`}
+                                              title={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
                                             >
-                                              {isCompleted && <FaCheck className="text-xs" />}
+                                              {isCompleted && <FaCheck className="text-sm font-bold" />}
                                             </button>
 
                                             {/* Subtopic Content */}
@@ -469,19 +491,33 @@ const SubjectLearning = () => {
 
                                             {/* Action Buttons */}
                                             <div className="flex items-center gap-2">
-                                              {/* YouTube Link */}
-                                              {subtopic.youtubeLink && (
+                                              {/* YouTube Links */}
+                                              {subtopic.resources?.filter(resource => resource.type === 'youtube').map((resource, index) => (
                                                 <a
-                                                  key={subtopic._id}
-                                                  href={subtopic.youtubeLink}
+                                                  key={`${subtopic._id}-youtube-${index}`}
+                                                  href={resource.link}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
-                                                  className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-all duration-200"
-                                                  title="Watch Video"
+                                                  className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all duration-200 hover:scale-105"
+                                                  title={resource.description || "Watch Video"}
                                                 >
                                                   <FaYoutube />
                                                 </a>
-                                              )}
+                                              ))}
+                                              
+                                              {/* Notes/PDF Resources */}
+                                              {subtopic.resources?.filter(resource => resource.type === 'note').map((resource, index) => (
+                                                <a
+                                                  key={`${subtopic._id}-note-${index}`}
+                                                  href={resource.link}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200 hover:scale-105"
+                                                  title={resource.description || "View Notes"}
+                                                >
+                                                  <FaExternalLinkAlt />
+                                                </a>
+                                              ))}
 
                                               {/* Bookmark Button */}
                                               <button

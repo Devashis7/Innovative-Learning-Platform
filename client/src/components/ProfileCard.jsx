@@ -1,40 +1,113 @@
-import React, { useContext } from "react";
-import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
-import { MdEmail, MdLocationOn, MdSchool } from "react-icons/md";
-import { AuthContext } from "@/context/AuthContext"; 
-const ProfileCard = () => {
-  const { user } = useContext(AuthContext); 
+import React from 'react';
+import { motion } from 'framer-motion';
+import { FaUser, FaGraduationCap, FaMapMarkerAlt, FaCalendarAlt } from 'react-icons/fa';
+import { useTheme } from '@/context/ThemeContext';
+
+const ProfileCard = ({ user, stats, onEdit, compact = false }) => {
+  const { isDarkMode, colors } = useTheme();
+  const currentTheme = isDarkMode ? colors.dark : colors.light;
 
   return (
-    <div
-      className="bg-gray-700 mt-10 text-white p-6 border
-     rounded-lg w-full max-w-sm mx-auto"
+    <motion.div 
+      className={`${currentTheme.background.card} rounded-xl shadow-lg p-6 border ${
+        isDarkMode ? 'border-gray-700' : 'border-gray-200'
+      } ${compact ? 'max-w-sm' : 'max-w-md'} mx-auto`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
-      <div className="flex flex-col items-center">
-        <div className="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            width="48"
-            height="48"
-            className="text-gray-500"
-          >
-            <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path>
-          </svg>
-        </div>
-        <h2 className="text-2xl font-bold">{user?.name || "Guest User"}</h2>
-        <p className="text-gray-500 text-sm mb-4">{user?.nickname || null}</p>
-      </div>
-      
-      <div className="space-y-4">
-        <div className="flex items-center">
-          <MdEmail className="text-xl text-gray-500 mr-4" />
-          <span className="text-white">{user?.email || "No Email"}</span>
-        </div>
+      <div className="text-center">
+        {/* Avatar */}
+        <motion.div 
+          className="w-24 h-24 bg-gradient-to-r from-rose-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
+        >
+          <FaUser className="text-3xl text-white" />
+        </motion.div>
+
+        {/* User Info */}
+        <h2 className={`text-2xl font-bold ${currentTheme.text.primary} mb-2`}>
+          {user?.name || 'Guest User'}
+        </h2>
         
+        <p className={`${currentTheme.text.secondary} mb-4 flex items-center justify-center gap-2`}>
+          <FaGraduationCap className="text-rose-500" />
+          {user?.email || 'No email provided'}
+        </p>
+
+        {/* Additional Info */}
+        {!compact && (
+          <div className="space-y-2 mb-4">
+            {user?.university && (
+              <p className={`text-sm ${currentTheme.text.secondary} flex items-center justify-center gap-2`}>
+                <FaMapMarkerAlt className="text-orange-500" />
+                {user.university}
+              </p>
+            )}
+            {user?.branch && (
+              <p className={`text-sm ${currentTheme.text.secondary} flex items-center justify-center gap-2`}>
+                <FaCalendarAlt className="text-blue-500" />
+                {user.branch} • {user.year || '2nd Year'}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Stats Section */}
+        {stats && (
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="text-center">
+              <div className={`text-xl font-bold ${currentTheme.text.primary}`}>
+                {stats.totalSubjects || 0}
+              </div>
+              <div className={`text-xs ${currentTheme.text.secondary}`}>Subjects</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-green-500">
+                {stats.completedSubjects || 0}
+              </div>
+              <div className={`text-xs ${currentTheme.text.secondary}`}>Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-blue-500">
+                {stats.totalProgress || 0}%
+              </div>
+              <div className={`text-xs ${currentTheme.text.secondary}`}>Progress</div>
+            </div>
+          </div>
+        )}
+
+        {/* Welcome Message */}
+        <motion.div 
+          className={`bg-gradient-to-r ${
+            isDarkMode 
+              ? 'from-rose-900/30 to-orange-900/30' 
+              : 'from-rose-100 to-orange-100'
+          } rounded-lg p-4 mb-4`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <p className={`text-sm ${currentTheme.text.secondary}`}>
+            {user?.bio || "Welcome to your learning journey! Keep exploring and growing."}
+          </p>
+        </motion.div>
+
+        {/* Edit Button */}
+        {onEdit && (
+          <motion.button
+            onClick={onEdit}
+            className="w-full bg-gradient-to-r from-rose-500 to-orange-500 text-white py-2 px-4 rounded-lg hover:from-rose-600 hover:to-orange-600 transition-all duration-200 font-medium"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            Edit Profile
+          </motion.button>
+        )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
