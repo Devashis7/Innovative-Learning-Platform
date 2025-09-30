@@ -3,7 +3,6 @@ import NavBar from "./NavBar";
 import { Link, useLocation } from "react-router-dom";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaRegMessage } from "react-icons/fa6";
-import semestersData from "@/utils/data";
 import LayoutSideCard from "./LayoutSideCard";
 
 const Layout = ({ children }) => {

@@ -1,6 +1,6 @@
-import HeadLIneOfCourse from "@/components/our components/HeadLIneofCourse";
-import Layout from "@/components/our components/layout";
-import TopicCard from "@/components/our components/TopicCard";
+import HeadLIneOfCourse from "@/components/HeadLIneofCourse";
+import Layout from "@/components/layout";
+import TopicCard from "@/components/TopicCard";
 import React, { useState } from "react";
 import systemDesign from "@/utils/operatingSystem";
 

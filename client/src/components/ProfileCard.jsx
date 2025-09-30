@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 import { MdEmail, MdLocationOn, MdSchool } from "react-icons/md";
-import { AuthContext } from "../../context/AuthContext"; 
+import { AuthContext } from "@/context/AuthContext"; 
 const ProfileCard = () => {
   const { user } = useContext(AuthContext); 
 

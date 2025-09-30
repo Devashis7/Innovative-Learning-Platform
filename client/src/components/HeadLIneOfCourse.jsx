@@ -1,5 +1,5 @@
 import React from "react";
-import ProgressBar from "@/components/our components/ProgressBar";
+import ProgressBar from "@/components/ProgressBar";
 
 const HeadLIneOfCourse = ({name,description }) => {
   return (

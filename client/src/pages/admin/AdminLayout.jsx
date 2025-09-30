@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Chat from "../../components/our components/Chat";
+import Chat from "../../components/Chat";
 
 const AdminLayout = ({ children }) => {
   return (

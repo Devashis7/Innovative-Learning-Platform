@@ -3,17 +3,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from "./pages/auth/SignUpPage";
-import ProfilePage from "./pages/user/ProfilePage";
-import DSA from "./pages/user/DSA";
-import OperatingSystems from "./pages/user/OperatingSystems";
-import DBMS from "./pages/user/DBMS";
-import ComputerNetworks from "./pages/user/ComputerNetworks";
-import SystemDesign from "./pages/user/SystemDesign";
-import OOPs from "./pages/user/OOPs";
+import ProfilePage from "./pages/users/Profile";
+import DSA from "./pages/courses/DSA";
+import OperatingSystems from "./pages/courses/OperatingSystems";
+import DBMS from "./pages/courses/DBMS";
+import ComputerNetworks from "./pages/courses/ComputerNetworks";
+import SystemDesign from "./pages/users/SystemDesign";
+import OOPs from "./pages/courses/OOPs";
 import PrivateRoute from "./components/private/PrivateRoute";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AddCourse2 from "./pages/admin/AddCourse2";
-import CourseDetail from "./pages/user/CourseDetail";
+import CourseManagement from "./pages/admin/CourseManagement";
+import CourseDetail from "./pages/users/CourseDetail";
 
 const App = () => {
   return (
@@ -34,7 +34,7 @@ const App = () => {
         path="/admin/add-course"
         element={
           <PrivateRoute>
-            <AddCourse2 />
+            <CourseManagement />
           </PrivateRoute>
         }
       />

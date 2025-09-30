@@ -1,0 +1,31 @@
+{
+  "name": "innovative-learning-platform",
+  "version": "1.0.0",
+  "description": "An innovative learning platform with React frontend and Node.js backend",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "install-server": "cd server && npm install",
+    "install-client": "cd client && npm install",
+    "install-all": "npm run install-server && npm run install-client",
+    "start": "cd server && npm start",
+    "seed": "cd server && node seedBTechSubjects.js",
+    "setup": "npm run install-all && npm run seed"
+  },
+  "keywords": [
+    "learning",
+    "platform",
+    "react",
+    "nodejs",
+    "mongodb",
+    "education"
+  ],
+  "author": "Devashis7",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

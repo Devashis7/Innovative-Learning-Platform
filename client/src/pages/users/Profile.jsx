@@ -1,9 +1,9 @@
 
 import React, { useContext, useState, useEffect } from "react";
-import Layout from "@/components/our components/layout";
-import ProfileCard from "@/components/our components/ProfileCard";
-import Progress from "@/components/our components/Progress";
-import { AuthContext } from "../../context/AuthContext";
+import Layout from "@/components/layout";
+import ProfileCard from "@/components/ProfileCard";
+import Progress from "@/components/Progress";
+import { AuthContext } from "@/context/AuthContext";
 import axios from "axios";
 
 const ProfilePage = () => {

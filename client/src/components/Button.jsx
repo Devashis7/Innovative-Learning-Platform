@@ -1,5 +1,5 @@
 import React from "react";
-import { FaArrowRight } from "react-icons/fa6";
+import { FaArrowRight } from "react-icons/fa";
 
 const Button = ({ children,border }) => {
   return (

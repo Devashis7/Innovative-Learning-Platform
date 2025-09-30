@@ -1,8 +1,8 @@
 
-import Layout from "@/components/our components/layout";
+import Layout from "@/components/layout";
 import React, { useState, useEffect } from "react";
-import TopicCard from "@/components/our components/TopicCard";
-import HeadLIneOfCourse from "@/components/our components/HeadLIneOfCourse";
+import TopicCard from "@/components/TopicCard";
+import HeadLIneOfCourse from "@/components/HeadLIneOfCourse";
 import axios from "axios";
 
 const ComputerNetworks = () => {
