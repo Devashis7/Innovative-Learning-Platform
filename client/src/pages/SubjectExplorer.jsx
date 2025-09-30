@@ -114,23 +114,17 @@ const SubjectExplorer = () => {
 
   if (loading) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: currentTheme.gradient }}
-      >
+      <div className={`${currentTheme.background.primary} min-h-screen flex items-center justify-center`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-rose-500 mx-auto"></div>
-          <p className="text-xl mt-4" style={{ color: currentTheme.text }}>Loading subjects...</p>
+          <p className={`${currentTheme.text.primary} text-xl mt-4`}>Loading subjects...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div 
-      className="min-h-screen transition-colors duration-300"
-      style={{ background: currentTheme.gradient }}
-    >
+    <div className={`${currentTheme.background.primary} min-h-screen transition-colors duration-300`}>
       {/* Navigation */}
       <div className="fixed top-0 w-full z-50">
         <NavBar />
@@ -145,8 +139,7 @@ const SubjectExplorer = () => {
       >
         <div className="max-w-7xl mx-auto text-center">
           <motion.h1 
-            className="text-5xl md:text-6xl font-bold mb-6"
-            style={{ color: currentTheme.text }}
+            className={`text-5xl md:text-6xl font-bold ${currentTheme.text.primary} mb-6`}
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
@@ -155,8 +148,7 @@ const SubjectExplorer = () => {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500"> Subjects</span>
           </motion.h1>
           <motion.p 
-            className="text-xl max-w-3xl mx-auto mb-8"
-            style={{ color: currentTheme.textSecondary }}
+            className={`text-xl ${currentTheme.text.secondary} max-w-3xl mx-auto mb-8`}
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -184,12 +176,7 @@ const SubjectExplorer = () => {
                 placeholder="Search subjects..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none transition-all duration-300"
-                style={{ 
-                  backgroundColor: currentTheme.card, 
-                  color: currentTheme.text,
-                  border: `1px solid ${isDarkMode ? '#374151' : '#d1d5db'}`
-                }}
+                className={`${currentTheme.background.card} ${currentTheme.text.primary} w-full pl-10 pr-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none transition-all duration-300 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
               />
             </div>
 
@@ -198,12 +185,7 @@ const SubjectExplorer = () => {
               <select
                 value={selectedSemester}
                 onChange={(e) => setSelectedSemester(e.target.value)}
-                className="px-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
-                style={{ 
-                  backgroundColor: currentTheme.card, 
-                  color: currentTheme.text,
-                  border: `1px solid ${isDarkMode ? '#374151' : '#d1d5db'}`
-                }}
+                className={`${currentTheme.background.card} ${currentTheme.text.primary} px-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
               >
                 {semesters.map(sem => (
                   <option key={sem} value={sem}>
@@ -215,12 +197,7 @@ const SubjectExplorer = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none"
-                style={{ 
-                  backgroundColor: currentTheme.card, 
-                  color: currentTheme.text,
-                  border: `1px solid ${isDarkMode ? '#374151' : '#d1d5db'}`
-                }}
+                className={`${currentTheme.background.card} ${currentTheme.text.primary} px-4 py-3 rounded-lg focus:ring-2 focus:ring-rose-500 focus:outline-none border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'}`}
               >
                 {categories.map(cat => (
                   <option key={cat} value={cat}>
@@ -233,7 +210,7 @@ const SubjectExplorer = () => {
 
           {/* Results Count */}
           <div className="mb-8">
-            <p style={{ color: currentTheme.textSecondary }}>
+            <p className={currentTheme.text.secondary}>
               Showing {filteredSubjects.length} of {subjects.length} subjects
             </p>
           </div>
@@ -253,11 +230,7 @@ const SubjectExplorer = () => {
               {filteredSubjects.map((subject, index) => (
                 <motion.div
                   key={subject._id}
-                  className="rounded-xl border overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                  style={{ 
-                    backgroundColor: currentTheme.card,
-                    borderColor: isDarkMode ? '#374151' : '#e5e7eb'
-                  }}
+                  className={`${currentTheme.background.card} rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} overflow-hidden hover:shadow-xl transition-all duration-300 group`}
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -271,10 +244,10 @@ const SubjectExplorer = () => {
                           {getSubjectIcon(subject.category)}
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold" style={{ color: currentTheme.text }}>
+                          <h3 className={`text-lg font-bold ${currentTheme.text.primary}`}>
                             {subject.short_name || subject.name}
                           </h3>
-                          <div className="flex items-center gap-2 text-sm" style={{ color: currentTheme.textSecondary }}>
+                          <div className={`flex items-center gap-2 text-sm ${currentTheme.text.secondary}`}>
                             <span>Sem {subject.semester}</span>
                             <span>•</span>
                             <span>{subject.category}</span>
@@ -302,21 +275,21 @@ const SubjectExplorer = () => {
                       )}
                     </div>
 
-                    <h4 className="text-xl font-bold mb-2" style={{ color: currentTheme.text }}>
+                    <h4 className={`text-xl font-bold ${currentTheme.text.primary} mb-2`}>
                       {subject.name}
                     </h4>
-                    <p className="text-sm mb-4 line-clamp-3" style={{ color: currentTheme.textSecondary }}>
+                    <p className={`text-sm ${currentTheme.text.secondary} mb-4 line-clamp-3`}>
                       {subject.description}
                     </p>
 
                     {/* Subject Stats */}
-                    <div className="flex items-center gap-4 mb-4 text-sm" style={{ color: currentTheme.textSecondary }}>
+                    <div className={`flex items-center gap-4 mb-4 text-sm ${currentTheme.text.secondary}`}>
                       <div className="flex items-center gap-1">
                         <FaBookOpen />
                         <span>{subject.units?.length || 0} Units</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <FaPlay />
+                        <FaPlay key={subject._id} />
                         <span>{subject.totalTopics || 0} Topics</span>
                       </div>
                       {subject.credits && (
@@ -351,11 +324,11 @@ const SubjectExplorer = () => {
             </div>
           ) : (
             <div className="text-center py-20">
-              <FaBookOpen className="text-6xl mx-auto mb-4" style={{ color: currentTheme.textSecondary }} />
-              <h3 className="text-2xl font-bold mb-2" style={{ color: currentTheme.text }}>
+              <FaBookOpen className={`text-6xl mx-auto mb-4 ${currentTheme.text.secondary}`} />
+              <h3 className={`text-2xl font-bold ${currentTheme.text.primary} mb-2`}>
                 No subjects found
               </h3>
-              <p style={{ color: currentTheme.textSecondary }}>
+              <p className={currentTheme.text.secondary}>
                 Try adjusting your search criteria or filters.
               </p>
             </div>

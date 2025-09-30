@@ -214,13 +214,10 @@ const SubjectLearning = () => {
 
   if (loading) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: currentTheme.gradient }}
-      >
+      <div className={`${currentTheme.background.primary} min-h-screen flex items-center justify-center`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-rose-500 mx-auto"></div>
-          <p className="text-xl mt-4" style={{ color: currentTheme.text }}>Loading subject...</p>
+          <p className={`${currentTheme.text.primary} text-xl mt-4`}>Loading subject...</p>
         </div>
       </div>
     );
@@ -228,13 +225,10 @@ const SubjectLearning = () => {
 
   if (!subject) {
     return (
-      <div 
-        className="min-h-screen flex items-center justify-center"
-        style={{ background: currentTheme.gradient }}
-      >
+      <div className={`${currentTheme.background.primary} min-h-screen flex items-center justify-center`}>
         <div className="text-center">
-          <FaBook className="text-6xl mx-auto mb-4" style={{ color: currentTheme.textSecondary }} />
-          <h2 className="text-2xl font-bold mb-2" style={{ color: currentTheme.text }}>Subject Not Found</h2>
+          <FaBook className={`text-6xl mx-auto mb-4 ${currentTheme.text.secondary}`} />
+          <h2 className={`text-2xl font-bold mb-2 ${currentTheme.text.primary}`}>Subject Not Found</h2>
           <Link to="/subjects">
             <button className="bg-gradient-to-r from-rose-500 to-orange-500 text-white px-6 py-3 rounded-lg font-semibold">
               Browse Subjects
@@ -246,10 +240,7 @@ const SubjectLearning = () => {
   }
 
   return (
-    <div 
-      className="min-h-screen transition-colors duration-300"
-      style={{ background: currentTheme.gradient }}
-    >
+    <div className={`${currentTheme.background.primary} min-h-screen transition-colors duration-300`}>
       {/* Navigation */}
       <div className="fixed top-0 w-full z-50">
         <NavBar />
@@ -257,13 +248,7 @@ const SubjectLearning = () => {
 
       <div className="pt-20 flex">
         {/* Left Sidebar - Subject Overview */}
-        <div 
-          className="w-80 h-screen sticky top-20 overflow-y-auto border-r"
-          style={{ 
-            backgroundColor: currentTheme.card,
-            borderColor: isDarkMode ? '#374151' : '#e5e7eb'
-          }}
-        >
+        <div className={`${currentTheme.background.card} w-80 h-screen sticky top-20 overflow-y-auto border-r ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="p-6">
             {/* Back Button */}
             <Link to="/subjects" className="inline-flex items-center gap-2 mb-6 text-rose-500 hover:text-rose-600">
@@ -273,10 +258,10 @@ const SubjectLearning = () => {
 
             {/* Subject Header */}
             <div className="mb-6">
-              <h1 className="text-2xl font-bold mb-2" style={{ color: currentTheme.text }}>
+              <h1 className={`text-2xl font-bold ${currentTheme.text.primary} mb-2`}>
                 {subject.name}
               </h1>
-              <div className="flex items-center gap-4 text-sm" style={{ color: currentTheme.textSecondary }}>
+              <div className={`flex items-center gap-4 text-sm ${currentTheme.text.secondary}`}>
                 <span>Semester {subject.semester}</span>
                 <span>•</span>
                 <span>{subject.category}</span>
@@ -291,9 +276,9 @@ const SubjectLearning = () => {
 
             {/* Overall Progress */}
             {progress && (
-              <div className="mb-6 p-4 rounded-lg" style={{ backgroundColor: currentTheme.background + '50' }}>
+              <div className={`${isDarkMode ? 'bg-gray-800/50' : 'bg-gray-100/50'} mb-6 p-4 rounded-lg`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-semibold" style={{ color: currentTheme.text }}>Overall Progress</span>
+                  <span className={`font-semibold ${currentTheme.text.primary}`}>Overall Progress</span>
                   <span className="text-lg font-bold text-green-500">{progress.overallProgress}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
@@ -302,7 +287,7 @@ const SubjectLearning = () => {
                     style={{ width: `${progress.overallProgress}%` }}
                   ></div>
                 </div>
-                <div className="flex justify-between text-sm mt-2" style={{ color: currentTheme.textSecondary }}>
+                <div className={`flex justify-between text-sm mt-2 ${currentTheme.text.secondary}`}>
                   <span>Total Time: {Math.floor((progress.totalTimeSpent || 0) / 60)}h {(progress.totalTimeSpent || 0) % 60}m</span>
                   <span>Streak: {progress.streak || 0} days</span>
                 </div>
@@ -311,13 +296,13 @@ const SubjectLearning = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="text-center p-3 rounded-lg" style={{ backgroundColor: currentTheme.background + '30' }}>
+              <div className={`${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-100/30'} text-center p-3 rounded-lg`}>
                 <div className="text-2xl font-bold text-blue-500">{subject.units?.length || 0}</div>
-                <div className="text-sm" style={{ color: currentTheme.textSecondary }}>Units</div>
+                <div className={`text-sm ${currentTheme.text.secondary}`}>Units</div>
               </div>
-              <div className="text-center p-3 rounded-lg" style={{ backgroundColor: currentTheme.background + '30' }}>
+              <div className={`${isDarkMode ? 'bg-gray-800/30' : 'bg-gray-100/30'} text-center p-3 rounded-lg`}>
                 <div className="text-2xl font-bold text-green-500">{subject.totalTopics || 0}</div>
-                <div className="text-sm" style={{ color: currentTheme.textSecondary }}>Topics</div>
+                <div className={`text-sm ${currentTheme.text.secondary}`}>Topics</div>
               </div>
             </div>
           </div>
@@ -331,25 +316,20 @@ const SubjectLearning = () => {
               {subject.units?.map((unit, unitIndex) => (
                 <motion.div
                   key={unit._id}
-                  className="rounded-lg border overflow-hidden"
-                  style={{ 
-                    backgroundColor: currentTheme.card,
-                    borderColor: isDarkMode ? '#374151' : '#e5e7eb'
-                  }}
+                  className={`${currentTheme.background.card} rounded-lg border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} overflow-hidden`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: unitIndex * 0.1 }}
                 >
                   {/* Unit Header */}
                   <div 
-                    className="p-4 cursor-pointer flex items-center justify-between hover:bg-opacity-80 transition-all duration-200"
-                    style={{ backgroundColor: currentTheme.background + '20' }}
+                    className={`${isDarkMode ? 'bg-gray-800/20' : 'bg-gray-100/20'} p-4 cursor-pointer flex items-center justify-between hover:bg-opacity-80 transition-all duration-200`}
                     onClick={() => toggleUnit(unit._id)}
                   >
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         {expandedUnits.has(unit._id) ? <FaChevronDown /> : <FaChevronRight />}
-                        <h3 className="text-xl font-bold" style={{ color: currentTheme.text }}>
+                        <h3 className={`text-xl font-bold ${currentTheme.text.primary}`}>
                           Unit {unitIndex + 1}: {unit.name}
                         </h3>
                       </div>
@@ -368,7 +348,7 @@ const SubjectLearning = () => {
                       </div>
                     </div>
                     
-                    <div className="text-sm" style={{ color: currentTheme.textSecondary }}>
+                    <div className={`text-sm ${currentTheme.text.secondary}`}>
                       {unit.topics?.length || 0} topics
                     </div>
                   </div>
@@ -384,7 +364,7 @@ const SubjectLearning = () => {
                       >
                         <div className="p-4 space-y-4">
                           {unit.description && (
-                            <p className="text-sm mb-4" style={{ color: currentTheme.textSecondary }}>
+                            <p className={`text-sm mb-4 ${currentTheme.text.secondary}`}>
                               {unit.description}
                             </p>
                           )}
@@ -393,19 +373,16 @@ const SubjectLearning = () => {
                           {unit.topics?.map((topic, topicIndex) => (
                             <div 
                               key={topic._id}
-                              className="border rounded-lg overflow-hidden"
-                              style={{ borderColor: isDarkMode ? '#374151' : '#e5e7eb' }}
-                            >
+                              className={`border rounded-lg overflow-hidden ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                               {/* Topic Header */}
                               <div 
-                                className="p-3 cursor-pointer flex items-center justify-between hover:bg-opacity-80 transition-all duration-200"
-                                style={{ backgroundColor: currentTheme.background + '10' }}
+                                className={`${isDarkMode ? 'bg-gray-800/10' : 'bg-gray-100/10'} p-3 cursor-pointer flex items-center justify-between hover:bg-opacity-80 transition-all duration-200`}
                                 onClick={() => toggleTopic(topic._id)}
                               >
                                 <div className="flex items-center gap-3">
                                   <div className="flex items-center gap-2">
                                     {expandedTopics.has(topic._id) ? <FaChevronDown className="text-sm" /> : <FaChevronRight className="text-sm" />}
-                                    <h4 className="font-semibold" style={{ color: currentTheme.text }}>
+                                    <h4 className={`font-semibold ${currentTheme.text.primary}`}>
                                       {topic.title}
                                     </h4>
                                   </div>
@@ -424,7 +401,7 @@ const SubjectLearning = () => {
                                   </div>
                                 </div>
                                 
-                                <div className="text-xs" style={{ color: currentTheme.textSecondary }}>
+                                <div className={`text-xs ${currentTheme.text.secondary}`}>
                                   {topic.subtopics?.length || 0} subtopics
                                 </div>
                               </div>
@@ -448,17 +425,8 @@ const SubjectLearning = () => {
                                           <div 
                                             key={subtopic._id}
                                             className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${
-                                              isCompleted ? 'bg-green-50 border-green-200' : 'hover:bg-opacity-50'
-                                            }`}
-                                            style={{ 
-                                              backgroundColor: isCompleted 
-                                                ? (isDarkMode ? '#064e3b20' : '#f0fdf4') 
-                                                : currentTheme.background + '05',
-                                              borderColor: isCompleted 
-                                                ? '#10b981' 
-                                                : (isDarkMode ? '#374151' : '#e5e7eb')
-                                            }}
-                                          >
+                                              isCompleted ? (isDarkMode ? 'bg-green-900/20 border-green-500' : 'bg-green-50 border-green-200') : (isDarkMode ? 'bg-gray-800/5' : 'bg-gray-50/5')
+                                            }`}>
                                             {/* Completion Checkbox */}
                                             <button
                                               onClick={() => toggleSubtopicCompletion(unit._id, topic._id, subtopic._id)}
@@ -475,8 +443,7 @@ const SubjectLearning = () => {
                                             <div className="flex-1">
                                               <div className="flex items-center gap-2 mb-1">
                                                 <h5 
-                                                  className={`font-medium ${isCompleted ? 'line-through text-gray-500' : ''}`}
-                                                  style={{ color: isCompleted ? currentTheme.textSecondary : currentTheme.text }}
+                                                  className={`font-medium ${isCompleted ? 'line-through text-gray-500' : currentTheme.text.primary}`}
                                                 >
                                                   {subtopic.title}
                                                 </h5>
@@ -494,7 +461,7 @@ const SubjectLearning = () => {
                                               </div>
                                               
                                               {subtopic.description && (
-                                                <p className="text-sm" style={{ color: currentTheme.textSecondary }}>
+                                                <p className={`text-sm ${currentTheme.text.secondary}`}>
                                                   {subtopic.description}
                                                 </p>
                                               )}
@@ -505,6 +472,7 @@ const SubjectLearning = () => {
                                               {/* YouTube Link */}
                                               {subtopic.youtubeLink && (
                                                 <a
+                                                  key={subtopic._id}
                                                   href={subtopic.youtubeLink}
                                                   target="_blank"
                                                   rel="noopener noreferrer"
@@ -530,6 +498,7 @@ const SubjectLearning = () => {
 
                                               {/* Notes Button */}
                                               <button
+                                                key={subtopic._id}
                                                 onClick={() => {
                                                   setActiveSubtopic(subtopic._id);
                                                   setShowNotesModal(true);
@@ -574,15 +543,14 @@ const SubjectLearning = () => {
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto"
-              style={{ backgroundColor: currentTheme.card }}
+              className={`${currentTheme.background.card} rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto`}
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
             >
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold" style={{ color: currentTheme.text }}>
+                  <h3 className={`text-xl font-bold ${currentTheme.text.primary}`}>
                     Personal Notes
                   </h3>
                   <button
@@ -597,23 +565,13 @@ const SubjectLearning = () => {
                   value={userNotes[activeSubtopic] || ""}
                   onChange={(e) => setUserNotes(prev => ({ ...prev, [activeSubtopic]: e.target.value }))}
                   placeholder="Add your personal notes here..."
-                  className="w-full h-64 p-4 border rounded-lg resize-none"
-                  style={{ 
-                    backgroundColor: currentTheme.background,
-                    color: currentTheme.text,
-                    borderColor: isDarkMode ? '#374151' : '#d1d5db'
-                  }}
+                  className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full h-64 p-4 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg resize-none`}
                 />
                 
                 <div className="flex justify-end gap-3 mt-4">
                   <button
                     onClick={() => setShowNotesModal(false)}
-                    className="px-4 py-2 border rounded-lg hover:bg-gray-50 transition-colors"
-                    style={{ 
-                      borderColor: isDarkMode ? '#374151' : '#d1d5db',
-                      color: currentTheme.text
-                    }}
-                  >
+                    className={`px-4 py-2 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg hover:bg-gray-50 transition-colors ${currentTheme.text.primary}`}>
                     Cancel
                   </button>
                   <button

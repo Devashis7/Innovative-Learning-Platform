@@ -1,104 +1,91 @@
-import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
-import { AuthContext } from "@/context/AuthContext";
-import AdminLayout from "./AdminLayout";
+import React, { useEffect, useState, useContext } from 'react';
+import { AuthContext } from '@/context/AuthContext';
+import AdminLayout from './AdminLayout';
+import { FaBook, FaUsers, FaChartBar } from 'react-icons/fa';
 
 const AdminDashboard = () => {
   const { user } = useContext(AuthContext);
-  const [students, setStudents] = useState([]);
+  const [stats, setStats] = useState({ courses: 0, users: 0 });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      const token = localStorage.getItem("token");
+    // Mock API call
+    const fetchStats = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/api/admin/students",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setStudents(res.data.students);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setStats({ courses: 12, users: 150 });
+        setLoading(false);
       } catch (err) {
-        console.error(
-          "Error fetching students:",
-          err.response?.data || err.message
-        );
+        setError('Failed to fetch stats');
+        setLoading(false);
       }
     };
 
-    if (user?.role === "admin") {
-      fetchStudents();
-    }
-  }, [user]);
+    fetchStats();
+  }, []);
 
-  // Function to return greeting based on time
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
   };
 
   return (
     <AdminLayout>
-      <main className="flex-1 p-6 bg-gray-900 overflow-auto">
-        {/* Greeting and Summary Cards */}
-        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4">
-          {/* Admin Greeting Card */}
-          <div className="bg-gradient-to-br from-purple-500 to-green-600 text-white p-5 shadow rounded-xl">
-            <h2 className="text-xl font-semibold">
-              {getGreeting()}, {user?.name} 👋
-            </h2>
-            <p className="text-sm mt-1">Welcome to your dashboard</p>
-            <p className="mt-2">📧 {user?.email}</p>
-            <p>🛡️ {user?.role?.toUpperCase()}</p>
-          </div>
-
-          {/* Total Students Card */}
-          <div className="bg-gradient-to-r from-blue-100 to-blue-200 p-5 shadow rounded-xl flex justify-between items-center">
-            <div>
-              <h3 className="text-lg font-bold text-blue-800">
-                Total Students
-              </h3>
-              <p className="text-3xl font-bold text-blue-700">
-                {students.length}
-              </p>
-            </div>
-            <span className="text-blue-600 text-4xl">🎓</span>
-          </div>
+      <div className='text-gray-900 dark:text-white'>
+        {/* Header */}
+        <div className='mb-10'>
+            <h1 className='text-4xl font-bold'>{getGreeting()}, {user?.name} 👋</h1>
+            <p className='text-gray-500 dark:text-gray-400 mt-2'>Welcome to the admin dashboard. Here's a summary of your platform.</p>
         </div>
 
-        {/* Student Table */}
-        <h1 className="text-2xl font-bold mb-4 text-gray-100">All Students</h1>
-        {students.length === 0 ? (
-          <p className="text-gray-500">No students found.</p>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white shadow rounded-xl overflow-hidden">
-              <thead className="bg-gray-100 text-gray-900 uppercase text-sm">
-                <tr>
-                  <th className="p-3 text-left">Name</th>
-                  <th className="p-3 text-left">Email</th>
-                  <th className="p-3 text-left">Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                {students.map((student) => (
-                  <tr key={student._id} className="border-t hover:bg-gray-50">
-                    <td className="p-3">{student.name}</td>
-                    <td className="p-3">{student.email}</td>
-                    <td className="p-3 capitalize">{student.role}</td>
-                  </tr>
+        {/* Stats Cards */}
+        {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[...Array(3)].map((_, i) => (
+                    <div key={i} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md animate-pulse">
+                        <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
+                        <div className="h-12 bg-gray-300 dark:bg-gray-700 rounded w-1/4"></div>
+                    </div>
                 ))}
-              </tbody>
-            </table>
-          </div>
+            </div>
+        ) : error ? (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
+                <strong className="font-bold">Error:</strong>
+                <span className="block sm:inline"> {error}</span>
+            </div>
+        ) : (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <StatCard icon={<FaBook className="text-blue-500" />} title="Total Courses" value={stats.courses} />
+                <StatCard icon={<FaUsers className="text-green-500" />} title="Total Users" value={stats.users} />
+                <StatCard icon={<FaChartBar className="text-yellow-500" />} title="Active Users" value="78" />
+            </div>
         )}
-      </main>
+
+        {/* Recent Activity */}
+        <div className="mt-12 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+            <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
+            <ul>
+                <li className="border-b border-gray-200 dark:border-gray-700 py-3">User 'Jane Doe' enrolled in 'Introduction to React'.</li>
+                <li className="border-b border-gray-200 dark:border-gray-700 py-3">New course 'Advanced Node.js' was added.</li>
+                <li className="py-3">User 'John Smith' completed 'CSS Fundamentals'.</li>
+            </ul>
+        </div>
+      </div>
     </AdminLayout>
   );
 };
+
+const StatCard = ({ icon, title, value }) => (
+  <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex items-center space-x-4'>
+    <div className="text-3xl">{icon}</div>
+    <div>
+      <p className="text-gray-500 dark:text-gray-400">{title}</p>
+      <p className="text-3xl font-bold">{value}</p>
+    </div>
+  </div>
+);
 
 export default AdminDashboard;

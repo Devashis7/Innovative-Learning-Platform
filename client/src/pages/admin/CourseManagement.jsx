@@ -1,507 +1,593 @@
-
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { 
+  FaPlus, 
+  FaBook, 
+  FaEdit, 
+  FaTrash, 
+  FaEye,
+  FaSave,
+  FaTimes,
+  FaChevronDown,
+  FaChevronRight,
+  FaYoutube,
+  FaGraduationCap
+} from "react-icons/fa";
 import AdminLayout from "./AdminLayout";
-import { AuthContext } from "@/context/AuthContext";
-import axios from "axios"; // Using axios for API calls
+import { useTheme } from "@/context/ThemeContext";
+import { fetchCourses, createCourse, updateCourse, deleteCourse } from "../../utils/api";
 
-function AddCourse2() {
+const CourseManagement = () => {
+  const { isDarkMode, colors } = useTheme();
+  const currentTheme = isDarkMode ? colors.dark : colors.light;
+  
   const [courses, setCourses] = useState([]);
-  const [formData, setFormData] = useState({
+  const [loading, setLoading] = useState(true);
+  const [showCourseForm, setShowCourseForm] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [expandedCourses, setExpandedCourses] = useState(new Set());
+  
+  // Form state
+  const [courseForm, setCourseForm] = useState({
     name: "",
     description: "",
-    image_link: "",
-    short_description: "",
     short_name: "",
+    semester: 1,
+    category: "Core",
+    credits: 3,
+    image_link: "",
+    prerequisites: [],
+    learningOutcomes: [],
+    units: []
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const [editCourseId, setEditCourseId] = useState(null);
-  const [selectedCourseIndex, setSelectedCourseIndex] = useState(null);
-  const [newHeading, setNewHeading] = useState("");
-  const [editingHeadingIndex, setEditingHeadingIndex] = useState(null);
-  const [editedHeadingName, setEditedHeadingName] = useState("");
-  const [newTopic, setNewTopic] = useState({ title: "", youtubeLink: "" });
-  const [editingTopic, setEditingTopic] = useState({
-    headingIndex: null,
-    topicIndex: null,
-    title: "",
-    youtubeLink: "",
-  });
-
-  const API_URL = "http://localhost:5000/api/courses";
-
-  // Fetch all courses
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get(API_URL);
-      setCourses(response.data.data);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
 
   useEffect(() => {
-    fetchCourses();
+    loadCourses();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  // Add a new course
-  const handleAdd = async () => {
-    if (!formData.name || !formData.description)
-      return alert("All fields required!");
+  const loadCourses = async () => {
     try {
-      const response = await axios.post(API_URL, { ...formData, heading: [] });
-      setCourses((prev) => [...prev, response.data.data]);
-      setFormData({
-        name: "",
-        description: "",
-        image_link: "",
-        short_description: "",
-        short_name: "",
-      });
+      const response = await fetchCourses();
+      setCourses(response.data.data || []);
     } catch (error) {
-      console.error("Error adding course:", error);
+      console.error("Error fetching courses:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Delete a course
-  const handleDelete = async (courseId) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.delete(`${API_URL}/${courseId}`);
-      setCourses(courses.filter((course) => course._id !== courseId));
+      if (editingCourse) {
+        await updateCourse(editingCourse._id, courseForm);
+      } else {
+        await createCourse(courseForm);
+      }
+      loadCourses();
+      resetForm();
     } catch (error) {
-      console.error("Error deleting course:", error);
+      console.error("Error saving course:", error);
     }
   };
 
-  // Set form for editing
   const handleEdit = (course) => {
-    setFormData({
+    setEditingCourse(course);
+    setCourseForm({
       name: course.name,
       description: course.description,
-      image_link: course.image_link,
-      short_description: course.short_description,
       short_name: course.short_name,
+      semester: course.semester,
+      category: course.category,
+      credits: course.credits,
+      image_link: course.image_link || "",
+      prerequisites: course.prerequisites || [],
+      learningOutcomes: course.learningOutcomes || [],
+      units: course.units || []
     });
-    setIsEditing(true);
-    setEditCourseId(course._id);
+    setShowCourseForm(true);
   };
 
-  // Update a course
-  const handleUpdate = async () => {
-    if (!editCourseId) return;
-    try {
-      const response = await axios.put(`${API_URL}/${editCourseId}`, formData);
-      const updatedCourses = courses.map((course) =>
-        course._id === editCourseId ? response.data.data : course
-      );
-      setCourses(updatedCourses);
-      setFormData({
+  const handleDelete = async (courseId) => {
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      try {
+        await deleteCourse(courseId);
+        loadCourses();
+      } catch (error) {
+        console.error("Error deleting course:", error);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setCourseForm({
+      name: "",
+      description: "",
+      short_name: "",
+      semester: 1,
+      category: "Core",
+      credits: 3,
+      image_link: "",
+      prerequisites: [],
+      learningOutcomes: [],
+      units: []
+    });
+    setEditingCourse(null);
+    setShowCourseForm(false);
+  };
+
+  const toggleCourseExpansion = (courseId) => {
+    const newExpanded = new Set(expandedCourses);
+    if (newExpanded.has(courseId)) {
+      newExpanded.delete(courseId);
+    } else {
+      newExpanded.add(courseId);
+    }
+    setExpandedCourses(newExpanded);
+  };
+
+  const addUnit = () => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: [...prev.units, {
         name: "",
         description: "",
-        image_link: "",
-        short_description: "",
-        short_name: "",
-      });
-      setIsEditing(false);
-      setEditCourseId(null);
-    } catch (error) {
-      console.error("Error updating course:", error);
-    }
+        order: prev.units.length + 1,
+        topics: []
+      }]
+    }));
   };
 
-  // Update course with new heading/topic data
-  const updateCourseOnBackend = async (updatedCourse) => {
-    try {
-      const response = await axios.put(`${API_URL}/${updatedCourse._id}`, updatedCourse);
-      const updatedCourses = courses.map((course) =>
-        course._id === updatedCourse._id ? response.data.data : course
-      );
-      setCourses(updatedCourses);
-      return response.data.data;
-    } catch (error) {
-      console.error("Error updating course details:", error);
-    }
+  const updateUnit = (unitIndex, field, value) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, index) => 
+        index === unitIndex ? { ...unit, [field]: value } : unit
+      )
+    }));
   };
 
-  // Add a heading
-  const addHeading = async () => {
-    if (!newHeading || selectedCourseIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading.push({ name: newHeading, topics: [] });
-    await updateCourseOnBackend(courseToUpdate);
-    setNewHeading("");
+  const removeUnit = (unitIndex) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.filter((_, index) => index !== unitIndex)
+    }));
   };
 
-  // Delete a heading
-  const deleteHeading = async (headingIndex) => {
-    if (selectedCourseIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading.splice(headingIndex, 1);
-    await updateCourseOnBackend(courseToUpdate);
+  const addTopic = (unitIndex) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, index) => 
+        index === unitIndex ? {
+          ...unit,
+          topics: [...unit.topics, {
+            title: "",
+            description: "",
+            order: unit.topics.length + 1,
+            subtopics: []
+          }]
+        } : unit
+      )
+    }));
   };
-  
-  const editHeading = (headingIndex) => {
-    setEditingHeadingIndex(headingIndex);
-    setEditedHeadingName(
-      courses[selectedCourseIndex].heading[headingIndex].name
+
+  const updateTopic = (unitIndex, topicIndex, field, value) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, uIndex) => 
+        uIndex === unitIndex ? {
+          ...unit,
+          topics: unit.topics.map((topic, tIndex) => 
+            tIndex === topicIndex ? { ...topic, [field]: value } : topic
+          )
+        } : unit
+      )
+    }));
+  };
+
+  const removeTopic = (unitIndex, topicIndex) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, uIndex) => 
+        uIndex === unitIndex ? {
+          ...unit,
+          topics: unit.topics.filter((_, tIndex) => tIndex !== topicIndex)
+        } : unit
+      )
+    }));
+  };
+
+  const addSubtopic = (unitIndex, topicIndex) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, uIndex) => 
+        uIndex === unitIndex ? {
+          ...unit,
+          topics: unit.topics.map((topic, tIndex) => 
+            tIndex === topicIndex ? {
+              ...topic,
+              subtopics: [...topic.subtopics, {
+                title: "",
+                description: "",
+                youtubeLink: "",
+                difficulty: "Medium",
+                estimatedTime: 30,
+                resources: []
+              }]
+            } : topic
+          )
+        } : unit
+      )
+    }));
+  };
+
+  const updateSubtopic = (unitIndex, topicIndex, subtopicIndex, field, value) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, uIndex) => 
+        uIndex === unitIndex ? {
+          ...unit,
+          topics: unit.topics.map((topic, tIndex) => 
+            tIndex === topicIndex ? {
+              ...topic,
+              subtopics: topic.subtopics.map((subtopic, sIndex) => 
+                sIndex === subtopicIndex ? { ...subtopic, [field]: value } : subtopic
+              )
+            } : topic
+          )
+        } : unit
+      )
+    }));
+  };
+
+  const removeSubtopic = (unitIndex, topicIndex, subtopicIndex) => {
+    setCourseForm(prev => ({
+      ...prev,
+      units: prev.units.map((unit, uIndex) => 
+        uIndex === unitIndex ? {
+          ...unit,
+          topics: unit.topics.map((topic, tIndex) => 
+            tIndex === topicIndex ? {
+              ...topic,
+              subtopics: topic.subtopics.filter((_, sIndex) => sIndex !== subtopicIndex)
+            } : topic
+          )
+        } : unit
+      )
+    }));
+  };
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-rose-500"></div>
+        </div>
+      </AdminLayout>
     );
-  };
+  }
 
-  const saveEditedHeading = async () => {
-    if (selectedCourseIndex === null || editingHeadingIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading[editingHeadingIndex].name = editedHeadingName;
-    await updateCourseOnBackend(courseToUpdate);
-    setEditingHeadingIndex(null);
-    setEditedHeadingName("");
-  };
-  
-  const cancelEditHeading = () => {
-    setEditingHeadingIndex(null);
-    setEditedHeadingName("");
-  };
-
-  const addTopic = async (headingIndex) => {
-    if (!newTopic.title || !newTopic.youtubeLink || selectedCourseIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading[headingIndex].topics.push({ ...newTopic });
-    await updateCourseOnBackend(courseToUpdate);
-    setNewTopic({ title: "", youtubeLink: "" });
-  };
-  
-  const deleteTopic = async (headingIndex, topicIndex) => {
-    if (selectedCourseIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading[headingIndex].topics.splice(topicIndex, 1);
-    await updateCourseOnBackend(courseToUpdate);
-  };
-  
-  const startEditTopic = (headingIndex, topicIndex) => {
-    const topic = courses[selectedCourseIndex].heading[headingIndex].topics[topicIndex];
-    setEditingTopic({
-      headingIndex,
-      topicIndex,
-      title: topic.title,
-      youtubeLink: topic.youtubeLink,
-    });
-  };
-
-  const saveEditTopic = async () => {
-    const { headingIndex, topicIndex, title, youtubeLink } = editingTopic;
-    if (selectedCourseIndex === null) return;
-    const courseToUpdate = { ...courses[selectedCourseIndex] };
-    courseToUpdate.heading[headingIndex].topics[topicIndex] = { title, youtubeLink };
-    await updateCourseOnBackend(courseToUpdate);
-    setEditingTopic({ headingIndex: null, topicIndex: null, title: "", youtubeLink: "" });
-  };
-
-  const cancelEditTopic = () => {
-    setEditingTopic({ headingIndex: null, topicIndex: null, title: "", youtubeLink: "" });
-  };
-
-  const { user } = useContext(AuthContext);
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 18) return "Good Afternoon";
-    return "Good Evening";
-  };
-  
   return (
     <AdminLayout>
-      <div className="p-6 max-w-5xl mx-auto bg-[#111827] min-h-screen rounded-xl shadow-inner text-white">
-        <h1 className="text-3xl font-bold mb-6">📘 Course Dashboard</h1>
-
-        {/* Admin Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-800 text-white p-5 shadow rounded-xl">
-            <h2 className="text-xl font-semibold">
-              {getGreeting()}, {user?.name} 👋
-            </h2>
-            <p className="text-sm mt-1">Welcome to your dashboard</p>
-            <p className="mt-2">📧 {user?.email}</p>
-            <p>🛡️ {user?.role?.toUpperCase()}</p>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className={`text-3xl font-bold ${currentTheme.text.primary}`}>
+              Course Management
+            </h1>
+            <p className={currentTheme.text.secondary}>
+              Manage B.Tech CSE subjects and their content structure
+            </p>
           </div>
-          <div className="bg-gray-800 text-white p-4 rounded-xl">
-            <h2 className="text-xl font-semibold">📚 Total Courses</h2>
-            <p className="text-3xl font-bold">{courses.length}</p>
-          </div>
+          
+          <button
+            onClick={() => setShowCourseForm(true)}
+            className="bg-gradient-to-r from-rose-500 to-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+          >
+            <FaPlus />
+            Add New Subject
+          </button>
         </div>
 
-        {/* Add/Edit Course */}
-        <div className="bg-gray-800 p-4 rounded shadow mb-8">
-          <h2 className="text-xl font-semibold mb-2">
-            {isEditing ? "Edit Course" : "Add Course"}
-          </h2>
-          <input
-            name="name"
-            placeholder="Course Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-          />
-          <input
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-          />
-          <input
-            name="image_link"
-            placeholder="Image URL"
-            value={formData.image_link}
-            onChange={handleChange}
-            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-          />
-          <input
-            name="short_description"
-            placeholder="Short Description"
-            value={formData.short_description}
-            onChange={handleChange}
-            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-          />
-          <input
-            name="short_name"
-            placeholder="Short Name"
-            value={formData.short_name}
-            onChange={handleChange}
-            className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-          />
-          {isEditing ? (
-            <button
-              onClick={handleUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded"
-            >
-              Update
-            </button>
-          ) : (
-            <button
-              onClick={handleAdd}
-              className="bg-rose-600 text-white px-4 py-2 rounded"
-            >
-              Add
-            </button>
-          )}
-        </div>
-
-        {/* Course List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {courses.map((course, idx) => (
-            <div key={course._id} className="bg-gray-800 p-4 rounded shadow">
-              <h3 className="text-xl font-bold">{course.name}</h3>
-              <p>{course.description}</p>
-              <div className="flex gap-4 text-sm mt-2">
-                <button
-                  onClick={() => handleEdit(course)}
-                  className="text-yellow-400"
-                >
-                  ✏️ Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(course._id)}
-                  className="text-red-500"
-                >
-                  🗑 Delete
-                </button>
-                <button
-                  onClick={() => setSelectedCourseIndex(idx)}
-                  className="text-blue-400"
-                >
-                  📂 View Headings
-                </button>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className={`${currentTheme.background.card} p-6 rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center gap-3">
+              <FaBook className="text-2xl text-blue-500" />
+              <div>
+                <p className={`text-2xl font-bold ${currentTheme.text.primary}`}>
+                  {courses.length}
+                </p>
+                <p className={`text-sm ${currentTheme.text.secondary}`}>
+                  Total Subjects
+                </p>
               </div>
             </div>
-          ))}
+          </div>
+
+          <div className={`${currentTheme.background.card} p-6 rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center gap-3">
+              <FaGraduationCap className="text-2xl text-green-500" />
+              <div>
+                <p className={`text-2xl font-bold ${currentTheme.text.primary}`}>
+                  {courses.reduce((acc, course) => acc + (course.totalTopics || 0), 0)}
+                </p>
+                <p className={`text-sm ${currentTheme.text.secondary}`}>
+                  Total Topics
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${currentTheme.background.card} p-6 rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center gap-3">
+              <FaYoutube className="text-2xl text-red-500" />
+              <div>
+                <p className={`text-2xl font-bold ${currentTheme.text.primary}`}>
+                  {courses.filter(course => course.category === "Core").length}
+                </p>
+                <p className={`text-sm ${currentTheme.text.secondary}`}>
+                  Core Subjects
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className={`${currentTheme.background.card} p-6 rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <div className="flex items-center gap-3">
+              <FaEdit className="text-2xl text-purple-500" />
+              <div>
+                <p className={`text-2xl font-bold ${currentTheme.text.primary}`}>
+                  {courses.filter(course => course.category === "Elective").length}
+                </p>
+                <p className={`text-sm ${currentTheme.text.secondary}`}>
+                  Electives
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Heading + Topics */}
-        {selectedCourseIndex !== null && courses[selectedCourseIndex] && (
-          <div className="mt-10 bg-gray-800 p-4 rounded shadow">
-            <h2 className="text-xl font-bold mb-4">
-              🗂 Headings for "{courses[selectedCourseIndex].name}"
+        {/* Courses List */}
+        <div className={`${currentTheme.background.card} rounded-xl border ${isDarkMode ? 'border-gray-700' : 'border-gray-200'} overflow-hidden`}>
+          <div className={`p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <h2 className={`text-xl font-bold ${currentTheme.text.primary}`}>
+              All Subjects ({courses.length})
             </h2>
-            <input
-              value={newHeading}
-              onChange={(e) => setNewHeading(e.target.value)}
-              placeholder="New Heading Name"
-              className="border bg-gray-700 border-gray-600 p-2 mb-2 w-full"
-            />
-            <button
-              onClick={addHeading}
-              className="bg-rose-600 text-white px-4 py-2 rounded mb-4"
-            >
-              ➕ Add Heading
-            </button>
+          </div>
 
-            {courses[selectedCourseIndex].heading.map((heading, hIdx) => (
-              <div key={hIdx} className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  {editingHeadingIndex === hIdx ? (
+          <div className={`divide-y ${isDarkMode ? 'divide-gray-700' : 'divide-gray-200'}`}>
+            {courses.map((course) => (
+              <div key={course._id} className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <button
+                      key={course._id}
+                      onClick={() => toggleCourseExpansion(course._id)}
+                      className="text-gray-400 hover:text-gray-600"
+                    >
+                      {expandedCourses.has(course._id) ? <FaChevronDown /> : <FaChevronRight />}
+                    </button>
+                    
                     <div>
-                      <input
-                        value={editedHeadingName}
-                        onChange={(e) => setEditedHeadingName(e.target.value)}
-                        className="border bg-gray-700 border-gray-600 p-1 flex-1 mr-2"
-                      />
-                      <div className=" space-x-3">
-                        <button
-                          onClick={saveEditedHeading}
-                          className="text-green-500 text-sm"
-                        >
-                          ✅
-                        </button>
-                        <button
-                          onClick={cancelEditHeading}
-                          className="text-red-500 text-sm ml-1"
-                        >
-                          ❌
-                        </button>
+                      <h3 className={`text-lg font-semibold ${currentTheme.text.primary}`}>
+                        {course.name} ({course.short_name})
+                      </h3>
+                      <div className={`flex items-center gap-4 text-sm ${currentTheme.text.secondary}`}>
+                        <span>Semester {course.semester}</span>
+                        <span>•</span>
+                        <span>{course.category}</span>
+                        <span>•</span>
+                        <span>{course.credits} Credits</span>
+                        <span>•</span>
+                        <span>{course.units?.length || 0} Units</span>
+                        <span>•</span>
+                        <span>{course.totalTopics || 0} Topics</span>
                       </div>
                     </div>
-                  ) : (
-                    <>
-                      <h3 className="text-lg font-semibold">{heading.name}</h3>
-                      <div>
-                        <button
-                          onClick={() => editHeading(hIdx)}
-                          className="text-yellow-400 text-sm mr-2"
-                        >
-                          ✏️ Edit
-                        </button>
-                        <button
-                          onClick={() => deleteHeading(hIdx)}
-                          className="text-red-500 text-sm"
-                        >
-                          ❌ Delete
-                        </button>
-                      </div>
-                    </>
-                  )}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleEdit(course)}
+                      className="p-2 text-blue-500 hover:bg-blue-100 rounded-lg transition-colors"
+                      title="Edit Course"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(course._id)}
+                      className="p-2 text-red-500 hover:bg-red-100 rounded-lg transition-colors"
+                      title="Delete Course"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
                 </div>
 
-                <table className="w-full border border-gray-700 text-sm mb-2">
-                  <thead className="bg-gray-700">
-                    <tr>
-                      <th className="border border-gray-600 px-2 py-1 text-left">Title</th>
-                      <th className="border border-gray-600 px-2 py-1 text-left">
-                        YouTube Link
-                      </th>
-                      <th className="border border-gray-600 px-2 py-1">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {heading.topics.map((topic, tIdx) => (
-                      <tr key={tIdx}>
-                        {editingTopic.headingIndex === hIdx &&
-                        editingTopic.topicIndex === tIdx ? (
-                          <>
-                            <td className="border border-gray-600 px-2 py-1">
-                              <input
-                                value={editingTopic.title}
-                                onChange={(e) =>
-                                  setEditingTopic({
-                                    ...editingTopic,
-                                    title: e.target.value,
-                                  })
-                                }
-                                className="border bg-gray-700 border-gray-600 p-1 w-full"
-                              />
-                            </td>
-                            <td className="border border-gray-600 px-2 py-1">
-                              <input
-                                value={editingTopic.youtubeLink}
-                                onChange={(e) =>
-                                  setEditingTopic({
-                                    ...editingTopic,
-                                    youtubeLink: e.target.value,
-                                  })
-                                }
-                                className="border bg-gray-700 border-gray-600 p-1 w-full"
-                              />
-                            </td>
-                            <td className="border border-gray-600 px-2 py-1 text-center space-x-4">
-                              <button
-                                onClick={saveEditTopic}
-                                className="text-green-500 text-sm mr-1"
-                              >
-                                Save
-                              </button>
-                              <button
-                                onClick={cancelEditTopic}
-                                className="text-red-500 text-sm"
-                              >
-                                Cancel
-                              </button>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td className="border border-gray-600 px-2 py-1">{topic.title}</td>
-                            <td className="border border-gray-600 px-2 py-1 text-blue-400">
-                              <a
-                                href={topic.youtubeLink}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {topic.youtubeLink}
-                              </a>
-                            </td>
-                            <td className="border border-gray-600 px-2 py-1 text-center space-x-4">
-                              <button
-                                onClick={() => startEditTopic(hIdx, tIdx)}
-                                className="text-yellow-400 text-sm mr-1"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => deleteTopic(hIdx, tIdx)}
-                                className="text-red-500 text-sm"
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-
-                <div className="flex gap-2">
-                  <input
-                    placeholder="Topic Title"
-                    value={newTopic.title}
-                    onChange={(e) =>
-                      setNewTopic({ ...newTopic, title: e.target.value })
-                    }
-                    className="border bg-gray-700 border-gray-600 p-1 flex-1"
-                  />
-                  <input
-                    placeholder="YouTube Link"
-                    value={newTopic.youtubeLink}
-                    onChange={(e) =>
-                      setNewTopic({ ...newTopic, youtubeLink: e.target.value })
-                    }
-                    className="border bg-gray-700 border-gray-600 p-1 flex-1"
-                  />
-                  <button
-                    onClick={() => addTopic(hIdx)}
-                    className="bg-rose-600 text-white px-3 py-1 rounded text-sm"
+                {expandedCourses.has(course._id) && (
+                  <motion.div
+                    className="mt-4 pl-8"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    transition={{ duration: 0.3 }}
                   >
-                    Add Topic
+                    <p className={`mb-4 ${currentTheme.text.secondary}`}>
+                      {course.description}
+                    </p>
+
+                    {course.units?.map((unit, unitIndex) => (
+                      <div key={unit._id} className={`mb-4 p-4 border rounded-lg ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                        <h4 className={`font-semibold mb-2 ${currentTheme.text.primary}`}>
+                          Unit {unitIndex + 1}: {unit.name}
+                        </h4>
+                        <p className={`text-sm mb-3 ${currentTheme.text.secondary}`}>
+                          {unit.description}
+                        </p>
+                        
+                        <div className="pl-4">
+                          {unit.topics?.map((topic, topicIndex) => (
+                            <div key={topic._id} className="mb-2">
+                              <h5 className={`font-medium ${currentTheme.text.primary}`}>
+                                {topic.title} ({topic.subtopics?.length || 0} subtopics)
+                              </h5>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                )}
+              </div>
+            ))}
+
+            {courses.length === 0 && (
+              <div className="p-12 text-center">
+                <FaBook className={`text-4xl mx-auto mb-4 ${currentTheme.text.secondary}`} />
+                <h3 className={`text-lg font-semibold mb-2 ${currentTheme.text.primary}`}>
+                  No subjects found
+                </h3>
+                <p className={currentTheme.text.secondary}>
+                  Start by adding your first B.Tech CSE subject
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Course Form Modal */}
+        {showCourseForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className={`${currentTheme.background.card} rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto`}>
+              <div className={`p-6 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                <div className="flex justify-between items-center">
+                  <h2 className={`text-2xl font-bold ${currentTheme.text.primary}`}>
+                    {editingCourse ? "Edit Subject" : "Add New Subject"}
+                  </h2>
+                  <button
+                    onClick={resetForm}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <FaTimes />
                   </button>
                 </div>
               </div>
-            ))}
+
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Basic Information */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                      Subject Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={courseForm.name}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, name: e.target.value }))}
+                      className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg`}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                      Short Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={courseForm.short_name}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, short_name: e.target.value }))}
+                      className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg`}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                      Semester *
+                    </label>
+                    <select
+                      value={courseForm.semester}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, semester: parseInt(e.target.value) }))}
+                      className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg`}
+                      required
+                    >
+                      {[1,2,3,4,5,6,7,8].map(sem => (
+                        <option key={sem} value={sem}>Semester {sem}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                      Category *
+                    </label>
+                    <select
+                      value={courseForm.category}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, category: e.target.value }))}
+                      className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg`}
+                      required
+                    >
+                      <option value="Core">Core</option>
+                      <option value="Elective">Elective</option>
+                      <option value="Lab">Lab</option>
+                      <option value="Project">Project</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                      Credits *
+                    </label>
+                    <input
+                      type="number"
+                      value={courseForm.credits}
+                      onChange={(e) => setCourseForm(prev => ({ ...prev, credits: parseInt(e.target.value) }))}
+                      className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg`}
+                      min="1"
+                      max="6"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={`block text-sm font-medium mb-2 ${currentTheme.text.primary}`}>
+                    Description *
+                  </label>
+                  <textarea
+                    value={courseForm.description}
+                    onChange={(e) => setCourseForm(prev => ({ ...prev, description: e.target.value }))}
+                    className={`${currentTheme.background.primary} ${currentTheme.text.primary} w-full p-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg h-24`}
+                    required
+                  />
+                </div>
+
+                {/* Form Buttons */}
+                <div className={`flex justify-end gap-3 pt-6 border-t ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className={`${currentTheme.text.primary} px-6 py-3 border ${isDarkMode ? 'border-gray-700' : 'border-gray-300'} rounded-lg hover:bg-gray-50 transition-colors`}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-gradient-to-r from-rose-500 to-orange-500 text-white rounded-lg hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+                  >
+                    <FaSave />
+                    {editingCourse ? "Update Subject" : "Create Subject"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </div>
     </AdminLayout>
   );
-}
+};
 
-export default AddCourse2;
+export default CourseManagement;

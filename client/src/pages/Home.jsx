@@ -23,7 +23,7 @@ import {
   FaRocket,
   FaTrophy
 } from "react-icons/fa";
-import Card from "@/components/Card";
+import Card from "@/components/common/Card";
 import FeatureCard from "@/components/FeatureCard ";
 import features from "@/utils/features";
 import axios from "axios";

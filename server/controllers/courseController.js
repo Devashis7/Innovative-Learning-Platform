@@ -1,4 +1,4 @@
-const Course = require("../models/Course");
+const Course = require('../models/Course');
 
 // Create a new course
 exports.createCourse = async (req, res) => {
@@ -8,6 +8,23 @@ exports.createCourse = async (req, res) => {
     res.status(201).json({ success: true, data: course });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
+  }
+};
+
+// Create multiple courses
+exports.createCourses = async (req, res) => {
+  try {
+    const { courses } = req.body;
+
+    if (!courses || !Array.isArray(courses)) {
+      return res.status(400).json({ message: 'Invalid data format' });
+    }
+
+    const createdCourses = await Course.insertMany(courses);
+    res.status(201).json({ success: true, data: createdCourses });
+  } catch (error) {
+    console.error('Error saving courses:', error);
+    res.status(500).json({ success: false, error: 'Server error while saving courses' });
   }
 };
 
@@ -26,7 +43,7 @@ exports.getCourse = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id);
     if (!course) {
-      return res.status(404).json({ success: false, error: "Course not found" });
+      return res.status(404).json({ success: false, error: 'Course not found' });
     }
     res.status(200).json({ success: true, data: course });
   } catch (error) {
@@ -42,7 +59,7 @@ exports.updateCourse = async (req, res) => {
       runValidators: true,
     });
     if (!course) {
-      return res.status(404).json({ success: false, error: "Course not found" });
+      return res.status(404).json({ success: false, error: 'Course not found' });
     }
     res.status(200).json({ success: true, data: course });
   } catch (error) {
@@ -55,7 +72,7 @@ exports.deleteCourse = async (req, res) => {
   try {
     const course = await Course.findByIdAndDelete(req.params.id);
     if (!course) {
-      return res.status(404).json({ success: false, error: "Course not found" });
+      return res.status(404).json({ success: false, error: 'Course not found' });
     }
     res.status(200).json({ success: true, data: {} });
   } catch (error) {

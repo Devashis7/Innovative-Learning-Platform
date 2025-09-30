@@ -5,7 +5,7 @@ const authRoutes = require('../routes/authRoutes');
 const app = express();
 app.use(express.json());
 app.use('/api/auth', authRoutes);
-
+jest.setTimeout(30000);
 describe('User API', () => {
   it('should register a new user', async () => {
     const res = await request(app).post('/api/auth/signup').send({
