@@ -357,26 +357,45 @@ const Home = () => {
                 <span className={`text-xl font-bold ${currentTheme.text.primary}`}>Innovative Learning Platform</span>
               </div>
               <p className={`${currentTheme.text.muted} mb-6 max-w-md`}>
-                Empowering engineers worldwide with cutting-edge education, practical skills, 
-                and career advancement opportunities.
+                A comprehensive learning platform for engineering students, built with modern 
+                web technologies to centralize quality educational resources.
               </p>
               <div className="flex gap-4">
-                <FaLinkedin className="text-2xl text-blue-500 hover:text-blue-400 cursor-pointer transition-colors" />
-                <FaTwitter className="text-2xl text-blue-400 hover:text-blue-300 cursor-pointer transition-colors" />
-                <FaGithub className={`text-2xl ${isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'} cursor-pointer transition-colors`} />
-                <FaInstagram className="text-2xl text-pink-500 hover:text-pink-400 cursor-pointer transition-colors" />
+                <a 
+                  href="https://www.linkedin.com/in/devashis-kumar" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-2xl text-blue-500 hover:text-blue-400 transition-colors"
+                >
+                  <FaLinkedin />
+                </a>
+                <a 
+                  href="https://github.com/Devashis7" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className={`text-2xl ${isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'} transition-colors`}
+                >
+                  <FaGithub />
+                </a>
               </div>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h3 className={`text-lg font-semibold mb-4 ${currentTheme.text.primary}`}>Quick Links</h3>
+              <h3 className={`text-lg font-semibold mb-4 ${currentTheme.text.primary}`}>Navigate</h3>
               <ul className="space-y-3">
-                {['About Us', 'Courses', 'Pricing', 'Blog', 'Career Support', 'Success Stories'].map((link) => (
-                  <li key={link}>
-                    <a href="#" className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}>{link}</a>
-                  </li>
-                ))}
+                <li>
+                  <Link to="/about" className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}>About</Link>
+                </li>
+                <li>
+                  <Link to="/courses" className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}>Courses</Link>
+                </li>
+                <li>
+                  <Link to="/login" className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}>Login</Link>
+                </li>
+                <li>
+                  <Link to="/register" className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}>Register</Link>
+                </li>
               </ul>
             </div>
 
@@ -386,15 +405,20 @@ const Home = () => {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <FaEnvelope className="text-rose-500" />
-                  <span className={currentTheme.text.muted}>support@innovativelearning.com</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <FaPhone className="text-rose-500" />
-                  <span className={currentTheme.text.muted}>+1 (555) 123-4567</span>
+                  <a 
+                    href="mailto:d.devashiskumar@gmail.com" 
+                    className={`${currentTheme.text.muted} hover:text-rose-500 transition-colors`}
+                  >
+                    d.devashiskumar@gmail.com
+                  </a>
                 </div>
                 <div className="flex items-center gap-3">
                   <FaMapMarkerAlt className="text-rose-500" />
-                  <span className={currentTheme.text.muted}>San Francisco, CA</span>
+                  <span className={currentTheme.text.muted}>Bokaro, Jharkhand</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <FaGraduationCap className="text-rose-500" />
+                  <span className={currentTheme.text.muted}>GIET University, Odisha</span>
                 </div>
               </div>
             </div>
@@ -403,12 +427,18 @@ const Home = () => {
           {/* Bottom Footer */}
           <div className={`border-t ${currentTheme.border} pt-8 flex flex-col md:flex-row justify-between items-center`}>
             <p className={`${currentTheme.text.muted} mb-4 md:mb-0`}>
-              &copy; {new Date().getFullYear()} Innovative Learning Platform. All rights reserved.
+              &copy; {new Date().getFullYear()} Innovative Learning Platform. Built by Devashis Kumar - College Project.
             </p>
             <div className={`flex gap-6 text-sm ${currentTheme.text.muted}`}>
-              <a href="#" className="hover:text-rose-500 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-rose-500 transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-rose-500 transition-colors">Cookie Policy</a>
+              <a 
+                href="https://github.com/Devashis7/Innovative-Learning-Platform" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-rose-500 transition-colors"
+              >
+                View Source Code
+              </a>
+              <Link to="/about" className="hover:text-rose-500 transition-colors">About Project</Link>
             </div>
           </div>
         </div>
