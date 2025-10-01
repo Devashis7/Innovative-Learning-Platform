@@ -2,10 +2,19 @@
 
 A modern, full-stack e-learning platform designed specifically for B.Tech Computer Science Engineering students. Built with React, Node.js, and MongoDB, this platform offers an intuitive learning experience with comprehensive course management and progress tracking.
 
+## 🌐 Live Demo
+
+- **🖥️ Frontend (Vercel)**: [https://innovative-learning-platform.vercel.app](https://innovative-learning-platform.vercel.app)
+- **⚡ Backend API (Render)**: [https://innovative-learning-backend.onrender.com](https://innovative-learning-backend.onrender.com)
+
+> **Status**: ✅ **Fully Deployed & Operational**
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D%2016.0.0-brightgreen)](https://nodejs.org/)
 [![React Version](https://img.shields.io/badge/react-%5E18.3.1-blue)](https://reactjs.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-green)](https://www.mongodb.com/atlas)
+[![Deployed on Vercel](https://img.shields.io/badge/Frontend-Vercel-black)](https://vercel.com/)
+[![Deployed on Render](https://img.shields.io/badge/Backend-Render-purple)](https://render.com/)
 
 ## ✨ Features
 
@@ -33,7 +42,7 @@ A modern, full-stack e-learning platform designed specifically for B.Tech Comput
 
 ## 🛠️ Technology Stack
 
-### **Frontend**
+### **Frontend (Deployed on Vercel)**
 - **React 18.3.1** - Modern UI library with hooks and context
 - **Vite** - Fast build tool and development server
 - **TailwindCSS** - Utility-first CSS framework
@@ -42,7 +51,7 @@ A modern, full-stack e-learning platform designed specifically for B.Tech Comput
 - **React Icons** - Comprehensive icon library
 - **Axios** - HTTP client for API requests
 
-### **Backend**
+### **Backend (Deployed on Render)**
 - **Node.js** - JavaScript runtime environment
 - **Express.js** - Web application framework
 - **MongoDB Atlas** - Cloud-hosted NoSQL database
@@ -50,6 +59,13 @@ A modern, full-stack e-learning platform designed specifically for B.Tech Comput
 - **JSON Web Tokens** - Secure authentication
 - **bcryptjs** - Password hashing and security
 - **CORS** - Cross-origin resource sharing
+- **Google Generative AI** - AI-powered content generation
+
+### **Hosting & Infrastructure**
+- **Vercel** - Frontend hosting with global CDN
+- **Render** - Backend API hosting with auto-scaling
+- **MongoDB Atlas** - Cloud database with global distribution
+- **GitHub Actions** - Automated CI/CD pipeline
 
 ### **Development Tools**
 - **ESLint** - Code quality and style enforcement
@@ -68,13 +84,24 @@ Before you begin, ensure you have the following installed:
 
 ## 🚀 Quick Start
 
-### 1. **Clone the Repository**
+### **🌐 Try the Live Platform**
+Visit the deployed platform: **[https://innovative-learning-platform.vercel.app](https://innovative-learning-platform.vercel.app)**
+
+**Test Credentials:**
+- **Email**: `testuser@gmail.com`
+- **Password**: `123456`
+
+> 🔐 **Note**: These are demo credentials for testing purposes. You can also create your own account through the registration page.
+
+### **💻 Local Development Setup**
+
+#### 1. **Clone the Repository**
 ```bash
 git clone https://github.com/Devashis7/Innovative-Learning-Platform.git
 cd Innovative-Learning-Platform
 ```
 
-### 2. **Install Dependencies**
+#### 2. **Install Dependencies**
 ```bash
 # Install all dependencies (client + server)
 npm run install-all
@@ -84,28 +111,46 @@ npm run install-client
 npm run install-server
 ```
 
-### 3. **Environment Setup**
+#### 3. **Environment Setup**
 Create a `.env` file in the `server` directory:
 ```env
-MONGO_URI=mongodb+srv://your-username:your-password@cluster.mongodb.net/InnovativeLearningPlatform
+# Database Configuration
+MONGO_URI=mongodb+srv://your-username:your-password@cluster.mongodb.net/InnovativeLearningPlatform?retryWrites=true&w=majority
+
+# Server Configuration
 PORT=3000
-JWT_SECRET=your-super-secret-jwt-key-here
+NODE_ENV=development
+
+# Security
+JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters-long
+
+# Optional: API Keys for additional features
+GOOGLE_GEMINI_API_KEY=your-google-gemini-api-key
 ```
 
-### 4. **Seed Database (Optional)**
+#### 4. **Database Setup**
 ```bash
-# Populate database with sample B.Tech CSE courses
-npm run seed
+# Option 1: Use existing MongoDB Atlas connection
+# (Recommended - uses cloud database)
+
+# Option 2: Local MongoDB (if you have MongoDB installed)
+# Update MONGO_URI to: mongodb://localhost:27017/InnovativeLearningPlatform
 ```
 
-### 5. **Start Development**
+#### 5. **Start Development**
 ```bash
 # Start both client and server concurrently
 npm run dev
 
-# Or start separately
-npm run client  # Frontend on http://localhost:5173
-npm run server  # Backend on http://localhost:3000
+# Access the application
+# Frontend: http://localhost:5173
+# Backend API: http://localhost:3000
+```
+
+#### 6. **Seed Database (Optional)**
+```bash
+# Populate database with sample B.Tech CSE courses
+npm run seed
 ```
 
 ## 📁 Project Structure
@@ -245,24 +290,55 @@ npm run test
 
 ## 🚀 Deployment
 
-### **Frontend (Vercel/Netlify)**
-```bash
-# Build the client
-cd client && npm run build
+### **Production Deployment (FREE Hosting)**
 
-# Deploy the dist/ folder to your hosting service
+#### **Frontend - Vercel** ✅ **LIVE**
+- **URL**: [https://innovative-learning-platform.vercel.app](https://innovative-learning-platform.vercel.app)
+- **Status**: ✅ Deployed and operational
+- **Features**: 
+  - Automatic deployments from GitHub
+  - Edge network for global performance
+  - Environment-aware API configuration
+  - Responsive design optimized for all devices
+
+#### **Backend - Render** ✅ **LIVE**  
+- **API URL**: [https://innovative-learning-backend.onrender.com](https://innovative-learning-backend.onrender.com)
+- **Status**: ✅ Deployed and operational
+- **Features**:
+  - RESTful API with full CRUD operations
+  - JWT authentication and authorization
+  - CORS configured for cross-origin requests
+  - Environment variables securely managed
+
+#### **Database - MongoDB Atlas** ✅ **ACTIVE**
+- **Type**: Cloud-hosted NoSQL database
+- **Features**:
+  - 512MB free tier with automatic scaling
+  - Global distribution for optimal performance
+  - Automated backups and security
+  - Connection pooling and optimization
+
+### **Deployment Architecture**
+```
+┌─────────────────┐    HTTPS     ┌──────────────────┐    MongoDB    ┌─────────────────┐
+│   Vercel        │ ────────────► │   Render         │ ────────────► │ MongoDB Atlas   │
+│   (Frontend)    │              │   (Backend API)  │              │   (Database)    │
+│   React + Vite  │              │   Node.js + Express              │   NoSQL Data    │
+└─────────────────┘              └──────────────────┘              └─────────────────┘
 ```
 
-### **Backend (Railway/Render/Heroku)**
-```bash
-# Ensure environment variables are set
-# Deploy the server/ directory
+### **Environment Configuration**
+The platform automatically detects the environment and configures API endpoints:
+
+**Production** (Vercel):
+```javascript
+API_BASE_URL = 'https://innovative-learning-backend.onrender.com'
 ```
 
-### **Database**
-- Uses MongoDB Atlas (cloud-hosted)
-- Automatic scaling and backups
-- Global distribution for optimal performance
+**Development** (Local):
+```javascript
+API_BASE_URL = 'http://localhost:3000'
+```
 
 ## 🤝 Contributing
 
@@ -299,14 +375,57 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Framer Motion** - For smooth animations
 - **Open Source Community** - For inspiration and guidance
 
-## 📞 Support
+## � Troubleshooting
+
+### **Common Issues & Solutions**
+
+#### **Frontend Not Loading**
+```bash
+# Check if the Vercel deployment is active
+curl https://innovative-learning-platform.vercel.app
+
+# If local development issues:
+cd client && npm install && npm run dev
+```
+
+#### **API Connection Issues**
+```bash
+# Verify backend is running
+curl https://innovative-learning-backend.onrender.com/
+
+# Check environment variables in client/.env
+VITE_API_URL=https://innovative-learning-backend.onrender.com
+```
+
+#### **Authentication Problems**
+- Clear browser localStorage and cookies
+- Check if JWT token is properly set
+- Verify MongoDB connection in server logs
+
+#### **CORS Errors**
+- Ensure frontend domain is allowed in server CORS configuration
+- Check that API requests include proper headers
+- Verify environment-specific API URLs
+
+### **Deployment Status Check**
+- **Frontend Status**: [Vercel Dashboard](https://vercel.com/dashboard)
+- **Backend Status**: [Render Dashboard](https://dashboard.render.com/)
+- **Database Status**: [MongoDB Atlas](https://cloud.mongodb.com/)
+
+## �📞 Support
 
 If you encounter any issues or have questions:
 
-1. **Check the documentation** above
-2. **Search existing issues** on GitHub
-3. **Create a new issue** with detailed information
-4. **Join our discussions** for community support
+1. **🌐 Try the Live Demo**: [https://innovative-learning-platform.vercel.app](https://innovative-learning-platform.vercel.app)
+2. **📖 Check the documentation** above
+3. **🔍 Search existing issues** on GitHub
+4. **🐛 Create a new issue** with detailed information
+5. **💬 Join our discussions** for community support
+
+### **Quick Links**
+- **🚀 Live Platform**: [innovative-learning-platform.vercel.app](https://innovative-learning-platform.vercel.app)
+- **📊 API Documentation**: [innovative-learning-backend.onrender.com](https://innovative-learning-backend.onrender.com)
+- **💾 GitHub Repository**: [github.com/Devashis7/Innovative-Learning-Platform](https://github.com/Devashis7/Innovative-Learning-Platform)
 
 ---
 
