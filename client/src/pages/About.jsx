@@ -12,10 +12,12 @@ import {
 } from "react-icons/fa";
 import NavBar from "@/components/NavBar";
 import { useTheme } from "@/context/ThemeContext";
+import devPhoto from "../assets/dev.jpg";
 
 const About = () => {
   const { isDarkMode, colors } = useTheme();
   const currentTheme = isDarkMode ? colors.dark : colors.light;
+  const [imageError, setImageError] = React.useState(false);
   
   const stats = [
     { icon: FaGraduationCap, value: "15+", label: "Course Modules" },
@@ -168,17 +170,25 @@ const About = () => {
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <img 
-                    src="/dev.jpg" 
-                    alt="Devashis Kumar"
-                    className="w-48 h-48 rounded-full object-cover border-4 border-rose-500/30 shadow-2xl"
-                    onError={(e) => {
-                      console.log('Image failed to load:', e.target.src);
-                      // Fallback to a placeholder or default image
-                      e.target.src = `https://ui-avatars.com/api/?name=Devashis+Kumar&size=200&background=f43f5e&color=fff&bold=true`;
-                    }}
-                    onLoad={() => console.log('Image loaded successfully')}
-                  />
+                  {!imageError ? (
+                    <img 
+                      src={devPhoto} 
+                      alt="Devashis Kumar"
+                      className="w-48 h-48 rounded-full object-cover border-4 border-rose-500/30 shadow-2xl"
+                      onError={() => {
+                        console.log('Image failed to load, showing fallback avatar');
+                        setImageError(true);
+                      }}
+                      onLoad={() => console.log('Developer image loaded successfully')}
+                    />
+                  ) : (
+                    <img 
+                      src={`https://ui-avatars.com/api/?name=Devashis+Kumar&size=200&background=f43f5e&color=fff&bold=true&rounded=true`}
+                      alt="Devashis Kumar"
+                      className="w-48 h-48 rounded-full object-cover border-4 border-rose-500/30 shadow-2xl"
+                      onLoad={() => console.log('Fallback avatar loaded')}
+                    />
+                  )}
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-500/20 to-orange-500/20"></div>
                 </motion.div>
               </div>
