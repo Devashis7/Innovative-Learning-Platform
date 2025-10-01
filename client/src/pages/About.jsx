@@ -172,6 +172,12 @@ const About = () => {
                     src="/dev.jpg" 
                     alt="Devashis Kumar"
                     className="w-48 h-48 rounded-full object-cover border-4 border-rose-500/30 shadow-2xl"
+                    onError={(e) => {
+                      console.log('Image failed to load:', e.target.src);
+                      // Fallback to a placeholder or default image
+                      e.target.src = `https://ui-avatars.com/api/?name=Devashis+Kumar&size=200&background=f43f5e&color=fff&bold=true`;
+                    }}
+                    onLoad={() => console.log('Image loaded successfully')}
                   />
                   <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-500/20 to-orange-500/20"></div>
                 </motion.div>
