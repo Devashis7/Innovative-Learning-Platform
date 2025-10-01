@@ -6,6 +6,7 @@ import NavBar from "@/components/NavBar";
 import { AuthContext } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import axios from "axios";
+import { API_BASE_URL } from '../../utils/api';
 
 const StudentDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -18,7 +19,7 @@ const StudentDashboard = () => {
     const fetchEnrolledCourses = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:3000/api/progress/dashboard", {
+        const response = await axios.get(`${API_BASE_URL}/api/progress/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEnrolledCourses(response.data.data?.courses || []);

@@ -27,6 +27,7 @@ import Card from "@/components/common/Card";
 import FeatureCard from "@/components/FeatureCard ";
 import features from "@/utils/features";
 import axios from "axios";
+import { API_BASE_URL } from '../utils/api';
 
 const Home = () => {
   const [courses, setCourses] = useState([]);
@@ -43,7 +44,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/courses");
+        const response = await axios.get(`${API_BASE_URL}/api/courses`);
         setCourses(response.data.data);
       } catch (error) {
         console.error("Error fetching courses:", error);

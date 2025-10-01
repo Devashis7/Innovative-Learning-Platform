@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { API_BASE_URL } from '../utils/api';
 import { 
   FaArrowLeft, 
   FaPlay, 
@@ -49,7 +50,7 @@ const SubjectLearning = () => {
       const token = localStorage.getItem("token");
       if (token) {
         // This will auto-enroll the user if they're not already enrolled
-        await axios.post(`http://localhost:3000/api/progress/enroll`, 
+        await axios.post(`${API_BASE_URL}/api/progress/enroll`, 
           { courseId: subjectId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -62,7 +63,7 @@ const SubjectLearning = () => {
 
   const fetchSubjectDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/courses/${subjectId}`);
+      const response = await axios.get(`${API_BASE_URL}/api/courses/${subjectId}`);
       setSubject(response.data.data);
       // Auto-expand first unit
       if (response.data.data.units.length > 0) {
@@ -78,10 +79,10 @@ const SubjectLearning = () => {
   const fetchUserProgress = async () => {
     try {
       console.log("🔄 Fetching progress for subject:", subjectId);
-      console.log("🔗 Full URL:", `http://localhost:3000/api/progress/course/${subjectId}`);
+      console.log("🔗 Full URL:", `${API_BASE_URL}/api/progress/course/${subjectId}`);
       const token = localStorage.getItem("token");
       if (token) {
-        const response = await axios.get(`http://localhost:3000/api/progress/course/${subjectId}`, {
+        const response = await axios.get(`${API_BASE_URL}/api/progress/course/${subjectId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         console.log("📊 Progress response:", response.data);
@@ -165,7 +166,7 @@ const SubjectLearning = () => {
         console.log("📤 Sending request:", requestData);
         
         const response = await axios.post(
-          `http://localhost:3000/api/progress/mark`,
+          `${API_BASE_URL}/api/progress/mark`,
           requestData,
           { headers: { Authorization: `Bearer ${token}` } }
         );

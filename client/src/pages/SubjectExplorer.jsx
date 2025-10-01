@@ -19,6 +19,7 @@ import {
 import NavBar from "@/components/NavBar";
 import { useTheme } from "@/context/ThemeContext";
 import axios from "axios";
+import { API_BASE_URL } from '../utils/api';
 
 const SubjectExplorer = () => {
   const { isDarkMode, colors } = useTheme();
@@ -46,7 +47,7 @@ const SubjectExplorer = () => {
 
   const fetchSubjects = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/api/courses");
+      const response = await axios.get(`${API_BASE_URL}/api/courses`);
       const subjectsData = response.data.data || [];
       setSubjects(subjectsData);
       
@@ -69,7 +70,7 @@ const SubjectExplorer = () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const response = await axios.get("http://localhost:3000/api/progress/dashboard", {
+        const response = await axios.get(`${API_BASE_URL}/api/progress/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         const progressMap = {};

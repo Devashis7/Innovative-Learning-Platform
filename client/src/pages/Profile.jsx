@@ -25,6 +25,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import NavBar from '@/components/NavBar';
 import axios from 'axios';
+import { API_BASE_URL } from '../utils/api';
 
 const ProfilePage = () => {
   const { user, loading } = useContext(AuthContext);
@@ -74,7 +75,7 @@ const ProfilePage = () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const response = await axios.get("http://localhost:3000/api/progress/dashboard", {
+        const response = await axios.get(`${API_BASE_URL}/api/progress/dashboard`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         
