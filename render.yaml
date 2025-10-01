@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: innovative-learning-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        value: mongodb+srv://devashisgame:devashis@sample.xnj7qgw.mongodb.net/InnovativeLearningPlatform?retryWrites=true&w=majority&appName=Sample
+      - key: JWT_SECRET
+        value: 53b31e02982ee4ea66221f4315cab81480d332bd97be31b0c4ed391d8ac6973191cd62e58a3dc8afff075db79a24ce8c0f129ca91ee5d79933f7362a2eaffd1c
+      - key: PORT
+        value: 3000
