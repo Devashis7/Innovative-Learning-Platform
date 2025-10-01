@@ -3,6 +3,7 @@ import { AuthContext } from '@/context/AuthContext';
 import AdminLayout from './AdminLayout';
 import { FaBook, FaUsers, FaChartBar, FaUserGraduate, FaArrowUp, FaClock } from 'react-icons/fa';
 import axios from 'axios';
+import { API_BASE_URL } from '../../utils/api';
 
 const AdminDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -22,8 +23,8 @@ const AdminDashboard = () => {
 
       // Fetch dashboard statistics
       const [statsResponse, activityResponse] = await Promise.all([
-        axios.get('http://localhost:3000/api/admin/dashboard/stats', { headers }),
-        axios.get('http://localhost:3000/api/admin/dashboard/activity', { headers })
+        axios.get(`${API_BASE_URL}/api/admin/dashboard/stats`, { headers }),
+        axios.get(`${API_BASE_URL}/api/admin/dashboard/activity`, { headers })
       ]);
 
       setStats(statsResponse.data.data);

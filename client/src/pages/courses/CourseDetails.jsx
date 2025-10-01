@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { API_BASE_URL } from '@/utils/api';
 import { 
   FaArrowLeft, 
   FaBookOpen, 
@@ -31,7 +32,7 @@ const CourseDetails = () => {
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3000/api/courses/${id}`);
+        const response = await fetch(`${API_BASE_URL}/api/courses/${id}`);
         
         if (!response.ok) {
           throw new Error('Course not found');
