@@ -37,6 +37,15 @@ app.use(
 );
 app.use(bodyParser.json());
 
+// Basic root route
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Innovative Learning Platform API',
+    status: 'running',
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Test endpoint
 app.get('/api/test', (req, res) => {
   res.json({ 
